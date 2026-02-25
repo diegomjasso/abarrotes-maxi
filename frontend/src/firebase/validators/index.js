@@ -1,7 +1,9 @@
 import { validateUser } from './users.validator';
+import { validateProduct } from './products.validator';
 
 const Validators ={
-    validateUser
+    validateUser,
+    validateProduct
 }
 
 export default Validators

@@ -1,144 +1,123 @@
-import React, { useState, useMemo, useEffect } from "react";
-import {
-  Container,
-  Typography,
-  TextField,
-  Paper,
-  Box,
-  Button,
-  IconButton,
-  Chip,
-} from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import React, { useState, useEffect, useMemo } from "react";
+import { Container, Paper, Box, CircularProgress } from "@mui/material";
+
+import CatalogHeader from "../../components/catalog/CatalogHeader";
+import CatalogToolbar from "../../components/catalog/CatalogToolbar";
+import ProductsTable from "../../components/catalog/ProductsTable";
 import ProductModal from "../../components/ProductModal";
-import "./Catalog.scss";
 
-const Catalog = () => {
-  const [search, setSearch] = useState("");
-  const [openModal, setOpenModal] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null);
+import {
+	getProducts,
+	deleteProduct,
+	searchProducts,
+	createProduct
+} from "../../firebase/services/products.service";
 
-  const [products, setProducts] = useState([]);
+const CatalogPage = () => {
+	const [search, setSearch] = useState("");
+	const [openModal, setOpenModal] = useState(false);
+	const [editingProduct, setEditingProduct] = useState(null);
+	const [products, setProducts] = useState([]);
+	const [loading, setLoading] = useState(false);
 
-  // 🔥 Persistencia localStorage
-  useEffect(() => {
-    const stored = localStorage.getItem("products");
-    if (stored) {
-      setProducts(JSON.parse(stored));
-    } else {
-      setProducts([
-        { id: 1, name: "Arroz 1kg", category: "Granos", price: 25, stock: 5 },
-        { id: 2, name: "Frijol 1kg", category: "Granos", price: 32, stock: 40 },
-      ]);
-    }
-  }, []);
+	const fetchProducts = async () => {
+		try {
+			setLoading(true);
+			const data = await getProducts();
+			setProducts(data);
+		} catch (error) {
+			console.error(error);
+		} finally {
+			setLoading(false);
+		}
+	};
 
-  useEffect(() => {
-    localStorage.setItem("products", JSON.stringify(products));
-  }, [products]);
+	useEffect(() => {
+		const delayDebounce = setTimeout(async () => {
+			if (!search.trim()) {
+				fetchProducts(); // carga inicial
+				return;
+			}
 
-  const filteredProducts = useMemo(() => {
-    return products.filter((product) =>
-      product.name.toLowerCase().includes(search.toLowerCase()) ||
-      product.category.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [search, products]);
+			try {
+				setLoading(true);
+				const results = await searchProducts(search);
+				setProducts(results);
+			} catch (error) {
+				console.error(error);
+			} finally {
+				setLoading(false);
+			}
+		}, 400); // 🔥 debounce 400ms
 
-  const handleSaveProduct = (product) => {
-    if (editingProduct) {
-      setProducts(
-        products.map((p) => (p.id === editingProduct.id ? { ...product, id: p.id } : p))
-      );
-      setEditingProduct(null);
-    } else {
-      const newProduct = { ...product, id: Date.now() };
-      setProducts([...products, newProduct]);
-    }
-  };
+		return () => clearTimeout(delayDebounce);
+	}, [search]);
 
-  const handleDelete = (id) => {
-    setProducts(products.filter((p) => p.id !== id));
-  };
+	const filteredProducts = useMemo(() => {
+		const term = (search || "").toLowerCase();
 
-  const columns = [
-    { field: "name", headerName: "Producto", flex: 1 },
-    { field: "category", headerName: "Categoría", flex: 1 },
-    { field: "price", headerName: "Precio ($)", width: 130 },
-    {
-      field: "stock",
-      headerName: "Stock",
-      width: 130,
-      renderCell: (params) =>
-        params.row.stock <= 10 ? (
-          <Chip label={params.row.stock} color="error" />
-        ) : (
-          <Chip label={params.row.stock} color="success" />
-        ),
-    },
-    {
-      field: "actions",
-      headerName: "Acciones",
-      width: 130,
-      renderCell: (params) => (
-        <>
-          <IconButton
-            onClick={() => {
-              setEditingProduct(params.row);
-              setOpenModal(true);
-            }}
-          >
-            <EditIcon />
-          </IconButton>
+		return products.filter((product) => {
+			const name = (product?.name || "").toLowerCase();
+			const brand = (product?.brand || "").toLowerCase();
+			const barcode = (product?.barcode || "").toString();
 
-          <IconButton onClick={() => handleDelete(params.row.id)}>
-            <DeleteIcon color="error" />
-          </IconButton>
-        </>
-      ),
-    },
-  ];
+			return (
+				name.includes(term) ||
+				brand.includes(term) ||
+				barcode.includes(term)
+			);
+		});
+	}, [search, products]);
 
-  return (
-    <Container sx={{ mt: 5 }}>
-      <Typography variant="h4" gutterBottom>
-        Catálogo de Productos
-      </Typography>
+	const handleDelete = async (id) => {
+		await deleteProduct(id);
+		fetchProducts();
+	};
 
-      <Box sx={{ mb: 3, display: "flex", gap: 2 }}>
-        <TextField
-          label="Buscar"
-          fullWidth
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+	const handleSave = async (args) => {
+		await createProduct(args);
+		fetchProducts()
+	}
 
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => {
-            setEditingProduct(null);
-            setOpenModal(true);
-          }}
-        >
-          Agregar
-        </Button>
-      </Box>
+	return (
+		<Container sx={{ mt: 5 }}>
+			<CatalogHeader />
 
-      <Paper sx={{ height: 500, p: 2 }}>
-        <DataGrid rows={filteredProducts} columns={columns} />
-      </Paper>
+			<CatalogToolbar
+				search={search}
+				setSearch={setSearch}
+				onAdd={() => {
+					setEditingProduct(null);
+					setOpenModal(true);
+				}}
+			/>
 
-      <ProductModal
-        open={openModal}
-        onClose={() => setOpenModal(false)}
-        onSave={handleSaveProduct}
-        initialData={editingProduct}
-      />
-    </Container>
-  );
+			<Paper sx={{ height: 600, p: 2 }}>
+				{loading ? (
+					<Box display="flex" justifyContent="center" alignItems="center" height="100%">
+						<CircularProgress />
+					</Box>
+				) : (
+					<ProductsTable
+						products={filteredProducts}
+						onEdit={(product) => {
+							setEditingProduct(product);
+							setOpenModal(true);
+						}}
+						onDelete={handleDelete}
+					/>
+				)}
+			</Paper>
+
+			<ProductModal
+				open={openModal}
+				onClose={() => setOpenModal(false)}
+				onSuccess={fetchProducts}
+				onSave={handleSave}
+				initialData={editingProduct}
+			/>
+		</Container>
+	);
 };
 
-export default Catalog;
+export default CatalogPage;
