@@ -11,27 +11,31 @@ import PointOfSales from "./pages/PointOfSales/PointOfSales";
 
 import "./App.scss"; // 👉 Archivo SASS principal
 import MainLayout from "./layouts/MainLayouts";
+import GlobalError from "./components/GlobalErrorHandler";
 
 
 const App = () => {
 	return (
-		<Routes>
-			{/* Ruta pública */}
-			<Route path="/login" element={<Login />} />
+		<>
+		 	<GlobalError />
+			<Routes>
+				{/* Ruta pública */}
+				<Route path="/login" element={<Login />} />
 
-			{/* Rutas privadas con Layout */}
-			<Route
-				element={
-					<PrivateRoute>
-						<MainLayout />
-					</PrivateRoute>
-				}
-			>
-				<Route path="/dashboard" element={<Dashboard />} />
-				<Route path="/catalogo" element={<Catalog />} />
-				<Route path="/punto-de-venta" element={<PointOfSales />} />
-			</Route>
-		</Routes>
+				{/* Rutas privadas con Layout */}
+				<Route
+					element={
+						<PrivateRoute>
+							<MainLayout />
+						</PrivateRoute>
+					}
+				>
+					<Route path="/dashboard" element={<Dashboard />} />
+					<Route path="/catalogo" element={<Catalog />} />
+					<Route path="/punto-de-venta" element={<PointOfSales />} />
+				</Route>
+			</Routes>
+		</>
 	);
 }
 

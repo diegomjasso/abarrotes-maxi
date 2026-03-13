@@ -21,6 +21,6 @@ const uiSlice = createSlice({
   },
 });
 
-export const loading = uiSlice.actions;
+export const { startLoading, stopLoading } = uiSlice.actions;
 
 export default uiSlice.reducer;

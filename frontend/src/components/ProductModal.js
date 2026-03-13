@@ -23,19 +23,22 @@ import BluetoothSearchingIcon from "@mui/icons-material/BluetoothSearching";
 import { findByBarcode } from "../firebase/services/products.service";
 
 import { useSelector } from "react-redux";
+import { generateSearchTokens } from "../utils/generateSearchToken.utils";
 
 
 const ProductModal = ({
 	open,
 	onClose,
 	onSave,
-	initialData
+	initialData,
+	onEdit
 }) => {
 	const barcodeInputRef = useRef(null);
 	const activateScannerMode = () => {
 		barcodeInputRef.current?.focus();
 	};
 	const [product, setProduct] = useState({
+		id: null, // 👈 agregamos id
 		name: "",
 		brand: "",
 		price: "",
@@ -57,6 +60,7 @@ const ProductModal = ({
 	useEffect(() => {
 		if (initialData) {
 			setProduct({
+				id: initialData.id || null, // 👈 guardamos id
 				...initialData,
 				price: initialData.price ?? "",
 				salePrice: initialData.salePrice ?? "",
@@ -66,6 +70,7 @@ const ProductModal = ({
 			});
 		} else {
 			setProduct({
+				id: null,
 				name: "",
 				brand: "",
 				price: "",
@@ -120,8 +125,7 @@ const ProductModal = ({
 			product.name.trim() &&
 			product.brand.trim() &&
 			product.price &&
-			product.stock &&
-			product.barcode.trim() &&
+			product.salePrice &&
 			!barcodeExists
 		);
 	}, [product, barcodeExists]);
@@ -131,25 +135,35 @@ const ProductModal = ({
 	/* ========================= */
 	const handleSubmit = (e) => {
 		e.preventDefault();
-
 		if (!isFormValid) return;
 
-		onSave({
-			...product,
+		const payload = {
+			name: product.name,
+			brand: product.brand,
 			price: parseFloat(product.price),
 			salePrice: parseFloat(product.salePrice || 0),
-			stock: parseInt(product.stock),
+			stock: parseInt(product.stock || 0),
+			barcode: product.barcode,
 			barcodes: product.barcodes
-				? product.barcodes
-					.split(",")
-					.map((b) => b.trim())
+				? product.barcodes.split(",").map((b) => b.trim())
 				: [],
 			registredBy: {
 				id: user.id,
 				name: user.name,
 				lastname: user.lastname,
 			},
-		});
+			name_lower: product.name.toLowerCase(),
+			brand_lower: product.brand.toLowerCase(),
+			searchTokens: generateSearchTokens(product),
+		};
+
+		if (product.id) {
+			// 🔥 EDITAR
+			onEdit(product.id, payload);
+		} else {
+			// 🔥 CREAR
+			onSave(payload);
+		}
 
 		onClose();
 	};
@@ -211,6 +225,7 @@ const ProductModal = ({
 							<TextField
 								label="Precio de Venta"
 								type="number"
+								required
 								inputProps={{ min: 0, step: "0.01" }}
 								value={product.salePrice}
 								onChange={(e) =>
@@ -239,7 +254,6 @@ const ProductModal = ({
 							<TextField
 								label="Stock"
 								type="number"
-								required
 								inputProps={{ min: 0 }}
 								value={product.stock}
 								onChange={(e) =>
@@ -252,7 +266,6 @@ const ProductModal = ({
 
 							<TextField
 								label="Código de Barras Principal"
-								required
 								value={product.barcode}
 								inputRef={barcodeInputRef}
 								onChange={(e) =>

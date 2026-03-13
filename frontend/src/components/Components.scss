@@ -1,6 +1,6 @@
 .paper-precios {
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 
 // Screen Blocker
@@ -15,8 +15,13 @@
   backdrop-filter: blur(4px);
 
   .screen-blocker-message {
-    font-size: 1rem;
-    font-weight: 500;
-    letter-spacing: 0.5px;
+	font-size: 1rem;
+	font-weight: 500;
+	letter-spacing: 0.5px;
   }
+}
+
+p.sale-price-cell {
+	color: #d67900 !important; /* amarillo suave */
+	font-weight: bold !important;
 }

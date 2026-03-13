@@ -6,7 +6,7 @@ import "./Login.scss";
 
 // Redux
 import { useDispatch, useSelector } from "react-redux";
-import { loading } from "../../store/features/ui/uiSlice";
+import { startLoading, stopLoading } from "../../store/features/ui/uiSlice";
 import { loginThunk } from "../../store/features/auth/authSlice";
 
 
@@ -31,12 +31,12 @@ const Login = () => {
 	/* ========================= */
 	const handleLogin = async (form) => {
 		dispatch(
-			loading.startLoading("Validando credenciales...")
+			startLoading("Validando credenciales...")
 		);
 
 		await dispatch(loginThunk(form));
 
-		dispatch(loading.stopLoading());
+		dispatch(stopLoading());
 	};
 
 	/* ========================= */

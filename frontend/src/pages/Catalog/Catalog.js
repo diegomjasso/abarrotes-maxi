@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Container, Paper, Box, CircularProgress } from "@mui/material";
 
 import CatalogHeader from "../../components/catalog/CatalogHeader";
@@ -7,85 +8,77 @@ import ProductsTable from "../../components/catalog/ProductsTable";
 import ProductModal from "../../components/ProductModal";
 
 import {
-	getProducts,
-	deleteProduct,
-	searchProducts,
-	createProduct
-} from "../../firebase/services/products.service";
+	fetchProductsPaginatedThunk,
+	deleteProductThunk,
+	createProductThunk,
+	updateProductThunk
+} from "../../store/features/products/productsThunk";
+import { setSearchTerm } from "../../store/features/products/productsSlice";
 
 const CatalogPage = () => {
+
+	const dispatch = useDispatch();
+
+	const products = useSelector(state => state.products.items);
+	const totalProducts = useSelector(state => state.products.total);
+	const loading = useSelector(state => state.ui.loading);
+
 	const [search, setSearch] = useState("");
+
+	const [query, setQuery] = useState({
+		page: 0,
+		pageSize: 10,
+		search: ""
+	});
+
 	const [openModal, setOpenModal] = useState(false);
 	const [editingProduct, setEditingProduct] = useState(null);
-	const [products, setProducts] = useState([]);
-	const [loading, setLoading] = useState(false);
 
-	const fetchProducts = async () => {
-		try {
-			setLoading(true);
-			const data = await getProducts();
-			setProducts(data);
-		} catch (error) {
-			console.error(error);
-		} finally {
-			setLoading(false);
-		}
-	};
-
+	// fetch products
 	useEffect(() => {
-		const delayDebounce = setTimeout(async () => {
-			if (!search.trim()) {
-				fetchProducts(); // carga inicial
-				return;
-			}
+		dispatch(fetchProductsPaginatedThunk(query));
+	}, [query, dispatch]);
 
-			try {
-				setLoading(true);
-				const results = await searchProducts(search);
-				setProducts(results);
-			} catch (error) {
-				console.error(error);
-			} finally {
-				setLoading(false);
-			}
-		}, 400); // 🔥 debounce 400ms
+	// debounce search
+	useEffect(() => {
 
-		return () => clearTimeout(delayDebounce);
+		const delay = setTimeout(() => {
+
+			setQuery(prev => ({
+				...prev,
+				page: 0,
+				search: search
+			}));
+
+		}, 400);
+
+		return () => clearTimeout(delay);
+
 	}, [search]);
 
-	const filteredProducts = useMemo(() => {
-		const term = (search || "").toLowerCase();
-
-		return products.filter((product) => {
-			const name = (product?.name || "").toLowerCase();
-			const brand = (product?.brand || "").toLowerCase();
-			const barcode = (product?.barcode || "").toString();
-
-			return (
-				name.includes(term) ||
-				brand.includes(term) ||
-				barcode.includes(term)
-			);
-		});
-	}, [search, products]);
-
-	const handleDelete = async (id) => {
-		await deleteProduct(id);
-		fetchProducts();
+	const handleDelete = (id) => {
+		dispatch(deleteProductThunk(id));
 	};
 
-	const handleSave = async (args) => {
-		await createProduct(args);
-		fetchProducts()
-	}
+	const handleSave = (args) => {
+		dispatch(createProductThunk(args));
+	};
+
+	const handleEdit = (id, args) => {
+		dispatch(updateProductThunk(id, args));
+	};
 
 	return (
 		<Container sx={{ mt: 5 }}>
+
 			<CatalogHeader />
 
 			<CatalogToolbar
 				search={search}
-				setSearch={setSearch}
+				setSearch={(value) => {
+					setSearch(value);
+					dispatch(setSearchTerm(value));
+				}}
 				onAdd={() => {
 					setEditingProduct(null);
 					setOpenModal(true);
@@ -93,29 +86,51 @@ const CatalogPage = () => {
 			/>
 
 			<Paper sx={{ height: 600, p: 2 }}>
+
 				{loading ? (
-					<Box display="flex" justifyContent="center" alignItems="center" height="100%">
+
+					<Box
+						display="flex"
+						justifyContent="center"
+						alignItems="center"
+						height="100%"
+					>
 						<CircularProgress />
 					</Box>
+
 				) : (
 					<ProductsTable
-						products={filteredProducts}
+						products={products}
+						rowCount={totalProducts}
+						loading={loading}
+						paginationModel={{ page: query.page, pageSize: query.pageSize }}
 						onEdit={(product) => {
 							setEditingProduct(product);
 							setOpenModal(true);
 						}}
 						onDelete={handleDelete}
+						onPaginationModelChange={(model) => {
+							setQuery(prev => ({
+								...prev,
+								page: model.page,
+								pageSize: model.pageSize
+							}));
+						}}
 					/>
+
 				)}
+
 			</Paper>
 
 			<ProductModal
 				open={openModal}
 				onClose={() => setOpenModal(false)}
-				onSuccess={fetchProducts}
+				onSuccess={() => dispatch(fetchProductsPaginatedThunk(query))}
 				onSave={handleSave}
+				onEdit={handleEdit}
 				initialData={editingProduct}
 			/>
+
 		</Container>
 	);
 };

@@ -8,10 +8,10 @@ import {
 	getDoc,
 	query,
 	where,
+	limit,
 	orderBy,
-	startAt,
-	endAt,
-	limit
+	startAfter,
+	getCountFromServer,
 } from "firebase/firestore";
 
 import { db } from "../config/firebaseConfig";
@@ -20,57 +20,80 @@ import Validators from "../validators";
 const productsCollection = collection(db, "products");
 
 /* ========================= */
+/* SEARCH PRODUCTS BY PAGE */
+/* ========================= */
+export const getProductsPaginated = async (
+	lastDoc = null,
+	pageSize = 10
+) => {
+	let q;
+
+	if (lastDoc) {
+		q = query(
+			collection(db, "products"),
+			orderBy("name_lower"),
+			startAfter(lastDoc),
+			limit(pageSize)
+		);
+	} else {
+		q = query(
+			collection(db, "products"),
+			orderBy("name_lower"),
+			limit(pageSize)
+		);
+	}
+
+	const snapshot = await getDocs(q);
+
+	const products = snapshot.docs.map(doc => ({
+		id: doc.id,
+		...doc.data()
+	}));
+
+	const lastVisible =
+		snapshot.docs[snapshot.docs.length - 1];
+
+	return { products, lastVisible };
+};
+
+export const getProductsCount = async () => {
+  const coll = collection(db, "products");
+  const snapshot = await getCountFromServer(coll);
+  return snapshot.data().count;
+};
+
+/* ========================= */
 /* SEARCH PRODUCTS */
 /* ========================= */
 export const searchProducts = async (searchTerm) => {
-  if (!searchTerm) {
-    return [];
-  }
+	if (!searchTerm) return [];
 
-  const term = searchTerm.toLowerCase();
+	const term = searchTerm.toLowerCase();
 
-  // 🔎 Búsqueda exacta por barcode
-  const barcodeQuery = query(
-    productsCollection,
-    where("barcode", "==", searchTerm)
-  );
+	const q = query(
+		productsCollection,
+		where("searchTokens", "array-contains", term),
+		limit(20)
+	);
 
-  const barcodeSnapshot = await getDocs(barcodeQuery);
+	const snapshot = await getDocs(q);
 
-  if (!barcodeSnapshot.empty) {
-    return barcodeSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-  }
-
-  // 🔎 Búsqueda por prefijo en nombre
-  const nameQuery = query(
-    productsCollection,
-    orderBy("name"),
-    startAt(term),
-    endAt(term + "\uf8ff"),
-    limit(20)
-  );
-
-  const snapshot = await getDocs(nameQuery);
-
-  return snapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  }));
+	return snapshot.docs.map(doc => ({
+		id: doc.id,
+		...doc.data(),
+	}));
 };
 
 /* ========================= */
 /* CREATE PRODUCT */
 /* ========================= */
+
 export const createProduct = async (productData) => {
-	console.log("productData", productData);
 	Validators.validateProduct(productData);
 
 	// 🔥 Validar barcode único
 	const existing = await findByBarcode(productData.barcode);
-	if (existing) {
+	if (existing && productData.barcode && productData.barcode.length > 0) {
 		throw new Error("El código de barras ya existe");
 	}
 
@@ -79,12 +102,10 @@ export const createProduct = async (productData) => {
 		barcodes: productData.barcodes || [],
 		isActive: productData.isActive ?? true,
 		createdAt: new Date(),
-		updatedAt: new Date(),
 	});
 
 	return docRef.id;
 };
-
 /* ========================= */
 /* GET ALL PRODUCTS */
 /* ========================= */

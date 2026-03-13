@@ -21,7 +21,7 @@ export const validateProduct = (product, isUpdate = false) => {
     errors.salePrice = "El precio de venta es inválido";
   }
 
-  if (typeof product.stock !== "number" || product.stock < 0) {
+  if (product.stock && (typeof product.stock !== "number" || product.stock < 0)) {
     errors.stock = "El stock no puede ser negativo";
   }
 
