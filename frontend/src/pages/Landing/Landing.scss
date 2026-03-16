@@ -15,7 +15,15 @@
 		font-family: "Great Vibes", cursive;
 
 		.logo {
-		font-size: 1.8rem;
+			display: flex;
+			align-items: center;
+
+			img {
+				height: 60px;
+				margin-right: 10px;
+			}
+
+			font-size: 1.8rem;
 		}
 
 		nav {
@@ -51,12 +59,16 @@
 			margin: 10px !important;
 		}
 
+		img {
+			width: 32rem;
+		}
+
 		h2 {
 			font-family: "Great Vibes", cursive;
 			font-size: clamp(1.5rem, 3vw, 2.5rem);
 			font-weight: normal;
 			font-size: 4rem !important;
-			margin-top: 15px !important;
+			margin-top: -6rem !important;
 		}
 	}
 

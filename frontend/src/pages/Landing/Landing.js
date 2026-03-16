@@ -14,7 +14,10 @@ export default function Landing() {
 		<div className="landing">
 
 			<header className="navbar">
-				<div className="logo">Abarrotes Maxi</div>
+				<div className="logo">
+					<img src="/assets/img/logo-no-background.png" alt="Abarrotes Maxi"/>
+					Abarrotes Maxi
+				</div>
 				<nav>
 					<a href="#menu">Menú</a>
 					<a href="#ubicacion">Ubicación</a>
@@ -24,7 +27,7 @@ export default function Landing() {
 
 			<section className="hero">
 				<div className="heroContent">
-					<h1>Abarrotes Maxi</h1>
+					<img src="/assets/img/logo-no-background.png" alt="Abarrotes Maxi"/>
 					<h2>Menudos y Birria Yoya</h2>
 					<a className="cta" href={`https://wa.me/${phone}`} target="_blank" rel="noopener noreferrer">
 						<FaWhatsapp /> Pedir por WhatsApp
