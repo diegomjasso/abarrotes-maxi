@@ -12,6 +12,7 @@ import PointOfSales from "./pages/PointOfSales/PointOfSales";
 import "./App.scss"; // 👉 Archivo SASS principal
 import MainLayout from "./layouts/MainLayouts";
 import GlobalError from "./components/GlobalErrorHandler";
+import Landing from "./pages/Landing/Landing";
 
 
 const App = () => {
@@ -20,6 +21,7 @@ const App = () => {
 		 	<GlobalError />
 			<Routes>
 				{/* Ruta pública */}
+				<Route path="/" element={<Landing />} />
 				<Route path="/login" element={<Login />} />
 
 				{/* Rutas privadas con Layout */}

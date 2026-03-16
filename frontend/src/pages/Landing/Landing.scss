@@ -1,0 +1,196 @@
+@use "../../variables" as *;
+@use "../../fonts.scss";
+
+.landing {
+	font-family: "Inter", sans-serif;
+	background: $black;
+	color: white;
+
+	.navbar {
+		display: flex;
+		justify-content: space-between;
+		padding: 20px 60px;
+		background: black;
+		border-bottom: 1px solid #222;
+		font-family: "Great Vibes", cursive;
+
+		.logo {
+		font-size: 1.8rem;
+		}
+
+		nav {
+			align-content: center;
+
+			a {
+				margin-left: 30px;
+				text-decoration: none;
+				color: white;
+				font-weight: 500;
+				font-size: 1.4rem;
+			}
+		}
+	}
+
+	.hero {
+		height: 70vh;
+		background:
+		linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+		url("../../../public/assets/img/birria.png");
+		background-size: cover;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+
+		h1 {
+			font-family: "Cinzel", serif;
+			font-size: 7rem !important;
+			font-weight: bold;
+			letter-spacing: 1px;
+			color: #d62828;
+			margin: 10px !important;
+		}
+
+		h2 {
+			font-family: "Great Vibes", cursive;
+			font-size: clamp(1.5rem, 3vw, 2.5rem);
+			font-weight: normal;
+			font-size: 4rem !important;
+			margin-top: 15px !important;
+		}
+	}
+
+	.heroContent h1 {
+		font-family: "Cinzel", serif;
+		color: $red;
+	}
+
+	.heroContent h2 {
+		margin-bottom: 30px;
+	}
+
+	.cta {
+		background: $red;
+		padding: 14px 30px;
+		border-radius: 6px;
+		text-decoration: none;
+		color: white;
+		font-weight: bold;
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.carousel {
+		display: flex;
+		gap: 20px;
+		padding: 40px;
+		justify-content: center;
+
+		img {
+			width: 300px;
+			border-radius: 10px;
+		}
+	}
+
+	.products {
+		display: flex;
+		justify-content: center;
+		gap: 40px;
+		padding: 50px;
+
+		h3 {
+			font-family: "Cinzel", serif;
+			font-size: 1.8rem;
+		}
+	}
+
+	.product img {
+		width: 350px;
+		border-radius: 10px;
+	}
+
+	.orders {
+		h2 {
+			font-family: "Great Vibes", cursive;
+			margin: 0px !important;
+		}
+		font-size: 2rem;
+		text-align: center;
+		padding: 20px;
+	}
+
+	.whatsapp {
+		font-size: 1.5rem;
+		color: #25d366;
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.location {
+		text-align: center;
+		padding: 40px;
+
+		h2 {
+			font-family: "Great Vibes", cursive;
+			font-size: 3rem;
+		}
+	}
+
+	.footer {
+		text-align: center;
+		padding: 20px;
+		background: black;
+		font-size: 0.8rem;
+		color: #888;
+	}
+
+	.slider {
+		width: 100%;
+		height: 500px;
+	}
+
+	.swiper {
+		width: 100%;
+		height: 100%;
+	}
+
+	.slide {
+		position: relative;
+		width: 100%;
+		height: 500px;
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			filter: brightness(0.6);
+		}
+	}
+
+	.slideText {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		text-align: center;
+
+		h2 {
+			font-size: 3rem;
+			color: #e50914;
+			font-family: "Cinzel", serif;
+			margin-bottom: 10px;
+			text-shadow:
+				-2px -2px 0 #ffffff,
+				2px -2px 0 #ffffff,
+				-2px 2px 0 #ffffff,
+				2px 2px 0 #ffffff;
+		}
+
+		p {
+			font-size: 2.4rem;
+			font-family: "Great Vibes", cursive;
+		}
+	}
+}
