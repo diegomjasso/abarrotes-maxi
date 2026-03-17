@@ -16,6 +16,7 @@ import {
     hashPassword,
     comparePassword,
 } from "../../utils/password.utils";
+import { serializeFirestoreData } from "../../utils/serializeFirestoreData";
 
 const usersCollection = collection(db, "users");
 
@@ -152,13 +153,13 @@ export const loginUser = async (
 
     // 🔥 Actualizar último login
     await updateDoc(doc(db, "users", userDoc.id), {
-        lastLogin: new Date(),
+        lastLogin: new Date().toISOString(),
     });
 
     const { password: _, ...safeUser } = userData;
 
     return {
         id: userDoc.id,
-        ...safeUser,
+        ...serializeFirestoreData(safeUser)
     };
 };
