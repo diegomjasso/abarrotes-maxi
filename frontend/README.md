@@ -1,70 +1,60 @@
-# Getting Started with Create React App
+# 🧾 Abarrotes Maxi - POS
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Sistema de punto de venta (POS) para tiendas de abarrotes, enfocado en la gestión de productos y ventas en tiempo real.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🚀 Descripción
 
-### `npm start`
+**Abarrotes Maxi** es una aplicación web desarrollada con **React** que permite administrar un catálogo de productos y registrar ventas de manera eficiente.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+El sistema utiliza:
+- **Firebase** como backend (sin servidor propio)
+- **Redux** para el manejo del estado global
+- **SASS** para estilos escalables
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## 🛠️ Tecnologías
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- ⚛️ React
+- 🔥 Firebase (Firestore / Realtime Database)
+- 🧠 Redux
+- 🎨 SASS (SCSS)
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 📦 Funcionalidades
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 📋 Catálogo
+- Alta de productos
+- Edición de productos
+- Eliminación de productos
+- Control de inventario
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 💰 Ventas
+- Registro de ventas
+- Cálculo automático de totales
+- Actualización de inventario en tiempo real
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## ⚙️ Requisitos previos
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Antes de comenzar, asegúrate de tener instalado:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- Node.js (>= 16)
+- npm o yarn
+- Cuenta en Firebase
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## 🔧 Instalación y configuración
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 1. Clonar el repositorio
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+git clone https://github.com/tu-usuario/abarrotes-maxi.git
+cd abarrotes-maxi
+npm install
+npm start
