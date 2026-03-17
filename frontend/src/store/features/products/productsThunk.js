@@ -9,9 +9,7 @@ import {
 	limit,
 	startAfter,
 	getDocs,
-	where,
-	startAt,
-	endAt
+	where
 } from "firebase/firestore";
 import { db } from "../../../firebase/config/firebaseConfig";
 import { setProductsPage } from "./productsSlice";
@@ -186,14 +184,16 @@ export const serializeFirestoreDoc = (doc) => {
   const data = doc.data();
 
   return {
-    id: doc.id,
-    ...data,
+	id: doc.id,
+	...data,
 
-    createdAt: data.createdAt?.toDate()?.toISOString() || null,
-    updatedAt: data.updatedAt?.toDate()?.toISOString() || null,
+	createdAt: data.createdAt?.toDate()?.toISOString() || null,
+	updatedAt: data.updatedAt?.toDate()?.toISOString() || null,
 
-    createdAtTimestamp: data.createdAt?.toMillis() || null,
-    updatedAtTimestamp: data.updatedAt?.toMillis() || null
+	createdAtTimestamp: data.createdAt?.toMillis() || null,
+	updatedAtTimestamp: data.updatedAt?.toMillis() || null,
+	lastLogin: data.lastLogin?.toDate().toISOString()
+
   };
 
 };
@@ -217,31 +217,24 @@ export const fetchProductsPaginatedThunk =
 				/* ========================= */
 
 				if (search && /^\d+$/.test(search)) {
-
 					q = query(
 						collection(db, "products"),
 						where("barcode", "==", search),
 						limit(1)
 					);
-
-				}
-
-				/* ========================= */
-				/* SEARCH BY NAME / BRAND */
-				/* ========================= */
-
-				else if (search) {
+				} else if (search) {
+					const normalizedSearch = search
+						.toLowerCase()
+						.normalize("NFD")
+						.replace(/[\u0300-\u036f]/g, "")
+						.trim();
 
 					q = query(
 						collection(db, "products"),
-						orderBy("name_lower"),
-						startAt(search.toLowerCase()),
-						endAt(search.toLowerCase() + "\uf8ff"),
+						where("searchTokens", "array-contains", normalizedSearch),
 						limit(pageSize)
 					);
-
 				}
-
 				/* ========================= */
 				/* NORMAL PAGINATION */
 				/* ========================= */

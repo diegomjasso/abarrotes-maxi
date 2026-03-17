@@ -40,7 +40,6 @@ const LoginForm = ({
     e.preventDefault();
 
     const validationErrors = validate();
-    console.log('form: ', form);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;

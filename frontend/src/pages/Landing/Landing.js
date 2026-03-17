@@ -1,10 +1,8 @@
 import "./Landing.scss"
 import { FaWhatsapp } from "react-icons/fa"
-import { Swiper, SwiperSlide } from "swiper/react"
-import { Autoplay, Pagination, EffectFade } from "swiper/modules"
-import "swiper/css"
-import "swiper/css/pagination"
-import "swiper/css/effect-fade"
+import HeaderLanding from "../../components/landing/Header"
+import FooterLanding from "../../components/landing/Footer"
+import SlidesLanding from "../../components/landing/Slides"
 
 export default function Landing() {
 
@@ -12,18 +10,7 @@ export default function Landing() {
 
 	return (
 		<div className="landing">
-
-			<header className="navbar">
-				<div className="logo">
-					<img src="/assets/img/logo-no-background.png" alt="Abarrotes Maxi"/>
-					Abarrotes Maxi
-				</div>
-				<nav>
-					<a href="#menu">Menú</a>
-					<a href="#ubicacion">Ubicación</a>
-					<a href="/login">POS</a>
-				</nav>
-			</header>
+			<HeaderLanding />
 
 			<section className="hero">
 				<div className="heroContent">
@@ -35,39 +22,7 @@ export default function Landing() {
 				</div>
 			</section>
 
-			<section className="slider">
-				<Swiper modules={[Autoplay, Pagination, EffectFade]} autoplay={{ delay: 4000 }} loop effect="fade" pagination={{ clickable: true }} className="swiper">
-					<SwiperSlide>
-						<div className="slide">
-							<img src="/assets/img/family.png" alt="Familia" />
-							<div className="slideText">
-								<h2>Tradición Familiar</h2>
-								<p>Disfruta de nuestros platillos caseros</p>
-							</div>
-						</div>
-					</SwiperSlide>
-
-					<SwiperSlide>
-						<div className="slide">
-							<img src="/assets/img/birria.png" alt="Birria" />
-							<div className="slideText">
-								<h2>Birria Estilo Norteño</h2>
-								<p>Sabor auténtico y tradicional</p>
-							</div>
-						</div>
-					</SwiperSlide>
-
-					<SwiperSlide>
-						<div className="slide">
-							<img src="/assets/img/menudo.jpg" alt="Menudo" />
-							<div className="slideText">
-								<h2>Menudo Casero</h2>
-								<p>Preparado con ingredientes frescos</p>
-							</div>
-						</div>
-					</SwiperSlide>
-				</Swiper>
-			</section>
+			<SlidesLanding />
 
 			<section id="menu" className="products">
 				<div className="product">
@@ -94,10 +49,7 @@ export default function Landing() {
 				<p>Esq. Av. Próceres de la Enseñanza #208</p>
 			</section>
 
-			<footer className="footer">
-				Powered By Bonza Marketing Corporation
-			</footer>
-
+			<FooterLanding />
 		</div>
 	)
 }

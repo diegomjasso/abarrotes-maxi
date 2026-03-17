@@ -1,4 +1,23 @@
+html {
+  font-size: 100%;
+}
+
+$mobileSmall: 480px;
+$mobile: 768px;
+$tablet: 1024px;
+
 $red: #ff1f3d;
 $dark: #0f0f0f;
 $black: #050505;
 $text: #e5e5e5;
+
+$space-xs: 0.8rem;
+$space-sm: 1.2rem;
+$space-md: 1.6rem;
+$space-lg: 2.4rem;
+$space-xl: 3.2rem;
+
+$text-sm: 1.4rem;
+$text-md: 1.6rem;
+$text-lg: 2rem;
+$text-xl: 3rem;
