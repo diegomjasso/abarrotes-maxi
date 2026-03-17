@@ -9,22 +9,39 @@
 	.navbar {
 		display: flex;
 		justify-content: space-between;
-		padding: 20px 60px;
 		background: black;
 		border-bottom: 1px solid #222;
 		font-family: "Great Vibes", cursive;
+		padding: .8rem 1rem;
 
-		.logo {
-			display: flex;
-			align-items: center;
+		.navbar-first-section {
+			.logo {
+				display: flex;
+				align-items: center;
 
-			img {
-				height: 60px;
-				margin-right: 10px;
+				img {
+					height: 4rem;
+				}
+
+				span {
+					display: flex;
+					flex-direction: column;
+				}
+
+				font-size: 1.8rem;
 			}
 
-			font-size: 1.8rem;
+			button.burger {
+				display: none;
+				background: none;
+				border: none;
+				color: white;
+				font-size: 2.5rem;
+				cursor: pointer;
+				z-index: 1000;
+			}
 		}
+		
 
 		nav {
 			align-content: center;
@@ -40,9 +57,9 @@
 	}
 
 	.hero {
-		height: 70vh;
+		height: 42rem;
 		background:
-		linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+			linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
 		url("../../../public/assets/img/birria.png");
 		background-size: cover;
 		display: flex;
@@ -68,7 +85,6 @@
 			font-size: clamp(1.5rem, 3vw, 2.5rem);
 			font-weight: normal;
 			font-size: 4rem !important;
-			margin-top: -6rem !important;
 		}
 	}
 
@@ -203,6 +219,255 @@
 		p {
 			font-size: 2.4rem;
 			font-family: "Great Vibes", cursive;
+		}
+	}
+}
+
+/* =========================
+   TABLETS
+========================= */
+@media (max-width: $tablet) {
+	.landing {
+
+		.navbar {		
+			nav a {
+				margin-left: 20px;
+				font-size: 1.2rem;
+			}
+		}
+
+		.hero {
+			height: 36rem;
+
+			h1 {
+				font-size: 5rem !important;
+			}
+
+			h2 {
+				font-size: 3rem !important;
+			}
+
+			img {
+				width: 24rem;
+			}
+		}
+
+		.products {
+			flex-wrap: wrap;
+			gap: 30px;
+		}
+
+		.product img {
+			width: 280px;
+		}
+
+		.carousel img {
+			width: 250px;
+		}
+
+		.slideText h2 {
+			font-size: 2.4rem;
+		}
+
+		.slideText p {
+			font-size: 2rem;
+		}
+	}
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+@media (max-width: $mobile) {
+	.landing {
+
+		.navbar {
+			flex-direction: column;
+		
+			.navbar-first-section {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+
+				.logo {
+					display: flex;
+					flex-direction: column;
+					
+					img {
+						display: none;
+					}
+				}
+
+				button.burger {
+					display: flex;
+					flex-direction: column;
+				}
+			}
+
+			nav {
+				&.navOpen {
+					display: flex;
+				}
+
+				display: none;
+				flex-direction: column;
+				width: 100%;
+				justify-content: center;
+
+				a {
+					display: flex;
+					flex-direction: column;
+					margin: .6rem 0rem;
+					font-size: 1.2rem;
+				}
+			}
+
+		}
+
+		.hero {
+			height: 34rem;
+			padding: 1.4rem;
+
+			h1 {
+				font-size: 4rem !important;
+			}
+
+			h2 {
+				font-size: 2.5rem !important;
+			}
+
+			img {
+				width: 20rem;
+			}
+		}
+
+		.products {
+			flex-direction: column;
+			align-items: center;
+			padding: 30px;
+		}
+
+		.product img {
+			width: 260px;
+		}
+
+		.carousel {
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.carousel img {
+			width: 80%;
+		}
+
+		.slide {
+			height: 400px;
+		}
+
+		.slideText h2 {
+			font-size: 2rem;
+		}
+
+		.slideText p {
+			font-size: 1.8rem;
+		}
+	}
+}
+
+
+/* =========================
+   SMALL MOBILE
+========================= */
+@media (max-width: $mobileSmall) {
+	.landing {
+		.navbar {
+			flex-direction: column;
+		
+			.navbar-first-section {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+
+				.logo {
+					display: flex;
+					flex-direction: column;
+					
+					img {
+						display: none;
+					}
+
+					span {
+						display: flex;
+						flex-direction: column;
+						font-size: 1.8rem;
+						font-weight: bold;
+					}
+				}
+
+				button.burger {
+					display: flex;
+					flex-direction: column;
+				}
+			}
+
+			nav {
+				&.navOpen {
+					display: flex;
+				}
+
+				display: none;
+				flex-direction: column;
+				width: 100%;
+				justify-content: center;
+
+				a {
+					display: flex;
+					flex-direction: column;
+					margin: .6rem 0rem;
+					font-size: 1.2rem;
+				}
+			}
+
+		}
+
+		.hero {
+
+			h1 {
+				font-size: 3rem !important;
+			}
+
+			h2 {
+				font-size: 2rem !important;
+			}
+
+			img {
+				width: 16rem;
+			}
+		}
+
+		.products {
+			padding: 20px;
+		}
+
+		.product img {
+			width: 220px;
+		}
+
+		.slide {
+			height: 320px;
+		}
+
+		.slideText h2 {
+			font-size: 1.6rem;
+		}
+
+		.slideText p {
+			font-size: 1.4rem;
+		}
+
+		.orders {
+			font-size: 1.5rem;
 		}
 	}
 }
