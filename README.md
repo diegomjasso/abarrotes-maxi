@@ -56,5 +56,6 @@ Antes de comenzar, asegúrate de tener instalado:
 ```bash
 git clone https://github.com/tu-usuario/abarrotes-maxi.git
 cd abarrotes-maxi
+cd frontend
 npm install
 npm start
