@@ -121,21 +121,135 @@
 		}
 	}
 
+
 	.products {
+		position: relative;
+		padding: 100px 20px 140px; // más espacio abajo para el efecto
 		display: flex;
 		justify-content: center;
-		gap: 40px;
-		padding: 50px;
+		gap: 8rem;
+		flex-wrap: wrap;
+		overflow: hidden;
+		height: 44rem;
 
-		h3 {
-			font-family: "Cinzel", serif;
-			font-size: 1.8rem;
+		// 🔥 fondo cálido
+		&::before {
+			content: "";
+			position: absolute;
+			inset: 0;
+			background: linear-gradient(135deg, #c0392b, #e67e22);
+			z-index: 0;
+			animation: warmFade 10s ease-in-out infinite;
+		}
+
+		// 🧊 fondo frío
+		&::after {
+			content: "";
+			position: absolute;
+			inset: 0;
+			background: linear-gradient(135deg, #000000, #67412e);
+			z-index: 0;
+			animation: coldFade 10s ease-in-out infinite;
+		}
+
+		// 🌊 BORDE INFERIOR PARALLAX
+		.wave {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 200%;
+			height: 120px;
+			background: white;
+			border-top-left-radius: 50% 100px;
+			border-top-right-radius: 50% 100px;
+			z-index: 1;
+			animation: waveMove 8s linear infinite;
+		}
+
+		.product {
+			position: relative;
+			z-index: 2;
+			background: rgba(255, 255, 255, 0.95);
+			backdrop-filter: blur(8px);
+			padding: 20px;
+			border-radius: 16px;
+			text-align: center;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+			transition: transform 0.3s ease;
+			color: #222;
+
+			h3 {
+				color: #c0392b; // rojo elegante tipo birria 🔥
+				font-weight: 700;
+				letter-spacing: 0.5px;
+			}
+
+			img {
+				width: 200px;
+				height: 200px;
+				object-fit: cover;
+				border-radius: 12px;
+			}
+
+			p.sub-product {
+				margin: 10px 0;
+				font-size: 1rem;
+				color: #555;
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: center;
+
+				.sub-product-desc {
+					font-weight: 500;
+					display: flex;
+					flex-direction: column;
+					width: 60%;
+					text-align: justify;
+				}
+
+				.price {
+					display: flex;
+					flex-direction: column;
+					font-weight: bold;
+					color: #e67e22; // naranja tipo caldo de birria
+					align-self: flex-start;
+				}
+			}
+
+			&:hover {
+				transform: translateY(-10px) scale(1.05);
+			}
 		}
 	}
 
-	.product img {
-		width: 350px;
-		border-radius: 10px;
+	@keyframes warmFade {
+		0%, 100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0;
+		}
+	}
+
+	@keyframes coldFade {
+		0%, 100% {
+			opacity: 0;
+		}
+		50% {
+			opacity: 1;
+		}
+	}
+
+	// 🌊 movimiento tipo parallax lateral
+	@keyframes waveMove {
+		0% {
+			transform: translateX(0);
+		}
+	
+		100% {
+			transform: translateX(-50%);
+		}
 	}
 
 	.orders {
@@ -228,7 +342,6 @@
 ========================= */
 @media (max-width: $tablet) {
 	.landing {
-
 		.navbar {		
 			nav a {
 				margin-left: 20px;
@@ -255,10 +368,21 @@
 		.products {
 			flex-wrap: wrap;
 			gap: 30px;
-		}
+			width: 100%;
 
-		.product img {
-			width: 280px;
+			.product {
+				width: 45%; // 🔥 2 columnas
+
+				img {
+					width: 100%;
+					height: 220px;
+				}
+			}
+
+			.wave {
+				height: 100px;
+			}
+
 		}
 
 		.carousel img {
@@ -271,6 +395,14 @@
 
 		.slideText p {
 			font-size: 2rem;
+		}
+
+		.slider {
+			height: 24rem;
+		}
+
+		.wave {
+			height: 80px;
 		}
 	}
 }
@@ -345,11 +477,25 @@
 		.products {
 			flex-direction: column;
 			align-items: center;
-			padding: 30px;
-		}
+			padding: 60px 20px 120px;
+			height: auto; // 🔥 importante
 
-		.product img {
-			width: 260px;
+			.wave {
+				height: 80px;
+			}
+
+			.product {
+				width: 90%;
+
+				img {
+					width: 100%;
+					height: 220px;
+				}
+
+				h3 {
+					font-size: 1.2rem;
+				}
+			}
 		}
 
 		.carousel {
@@ -447,15 +593,28 @@
 		}
 
 		.products {
-			padding: 20px;
+			padding: 50px 15px 100px;
+
+			.wave {
+				height: 60px;
+			}
+
+			.product {
+				width: 100%;
+				max-width: 280px;
+
+				img {
+					height: 180px;
+				}
+
+				h3 {
+					font-size: 1.2rem;
+				}
+			}
 		}
 
-		.product img {
-			width: 220px;
-		}
-
-		.slide {
-			height: 320px;
+		.slider {
+			height: 20rem;
 		}
 
 		.slideText h2 {

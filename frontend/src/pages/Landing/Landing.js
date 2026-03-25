@@ -3,10 +3,24 @@ import { FaWhatsapp } from "react-icons/fa"
 import HeaderLanding from "../../components/landing/Header"
 import FooterLanding from "../../components/landing/Footer"
 import SlidesLanding from "../../components/landing/Slides"
+import { useEffect } from "react"
 
 export default function Landing() {
 
 	const phone = "524495869527"
+
+	useEffect(() => {
+		const handleScroll = () => {
+			const section = document.querySelector(".products")
+			if (!section) return
+
+			const offset = window.scrollY
+			section.style.setProperty("--parallax", `${offset * 0.2}px`)
+		}
+
+		window.addEventListener("scroll", handleScroll)
+		return () => window.removeEventListener("scroll", handleScroll)
+	}, [])
 
 	return (
 		<div className="landing">
@@ -28,11 +42,30 @@ export default function Landing() {
 				<div className="product">
 					<img src="/assets/img/menudo.jpg" alt="Menudo Tradicional" />
 					<h3>Menudo Tradicional</h3>
+					<p className="sub-product">
+						<span className="sub-product-desc">Menudo chico</span> <span className="price">$70</span>
+					</p>
+					<p className="sub-product">
+						<span className="sub-product-desc">Menudo mediano</span> <span className="price">$85</span>
+					</p>
+					<p className="sub-product">
+						<span className="sub-product-desc">Menudo grande</span> <span className="price">$100</span>
+					</p>
 				</div>
 				<div className="product">
 					<img src="/assets/img/birria.png" alt="Birria Estilo Jalisco" />
 					<h3>Birria Estilo Norteño</h3>
+					<p className="sub-product">
+						<span className="sub-product-desc">Taco de Birria</span> <span className="price">$25</span>
+					</p>
+					<p className="sub-product">
+						<span className="sub-product-desc">Birria 100g</span> <span className="price">$100</span>
+					</p>
+					<p className="sub-product">
+						<span className="sub-product-desc">Birria 1 Kilo o a granel</span> <span className="price">$400</span>
+					</p>
 				</div>
+				<div className="wave"></div>
 			</section>
 
 			<section className="orders">
