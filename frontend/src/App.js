@@ -13,9 +13,15 @@ import "./App.scss"; // 👉 Archivo SASS principal
 import MainLayout from "./layouts/MainLayouts";
 import GlobalError from "./components/GlobalErrorHandler";
 import Landing from "./pages/Landing/Landing";
+import ScreenBlocker from "./components/ScreenBlocker";
+import { useSelector } from "react-redux";
 
 
 const App = () => {
+	const { loading: isLoading, loadingMessage } = useSelector(
+		(state) => state.ui
+	);
+
 	return (
 		<>
 		 	<GlobalError />
@@ -37,6 +43,10 @@ const App = () => {
 					<Route path="/punto-de-venta" element={<PointOfSales />} />
 				</Route>
 			</Routes>
+			<ScreenBlocker
+				open={isLoading}
+				message={loadingMessage}
+			/>
 		</>
 	);
 }

@@ -9,7 +9,8 @@ import {
 	limit,
 	startAfter,
 	getDocs,
-	where
+	where,
+	getCountFromServer
 } from "firebase/firestore";
 import { db } from "../../../firebase/config/firebaseConfig";
 import { setProductsPage } from "./productsSlice";
@@ -200,85 +201,113 @@ export const serializeFirestoreDoc = (doc) => {
 
 export const fetchProductsPaginatedThunk =
 	({ page, pageSize }) =>
-		async (dispatch, getState) => {
+	async (dispatch, getState) => {
 
-			dispatch(startLoading());
+		dispatch(startLoading());
 
-			try {
+		try {
+			const { cursors, search } = getState().products;
 
-				const { cursors, search } = getState().products;
+			let q;
+			let countQuery;
 
-				let q;
+			const previousCursor = cursors?.[page - 1];
 
-				const previousCursor = cursors?.[page - 1];
+			/* ========================= */
+			/* SEARCH BY BARCODE */
+			/* ========================= */
 
-				/* ========================= */
-				/* SEARCH BY BARCODE */
-				/* ========================= */
+			if (search && /^\d+$/.test(search)) {
 
-				if (search && /^\d+$/.test(search)) {
+				q = query(
+					collection(db, "products"),
+					where("barcode", "==", search),
+					limit(1)
+				);
+
+				countQuery = query(
+					collection(db, "products"),
+					where("barcode", "==", search)
+				);
+
+			} 
+			/* ========================= */
+			/* SEARCH NORMAL */
+			/* ========================= */
+			else if (search) {
+
+				const normalizedSearch = search
+					.toLowerCase()
+					.normalize("NFD")
+					.replace(/[\u0300-\u036f]/g, "")
+					.trim();
+
+				q = query(
+					collection(db, "products"),
+					where("searchTokens", "array-contains", normalizedSearch),
+					limit(pageSize)
+				);
+
+				countQuery = query(
+					collection(db, "products"),
+					where("searchTokens", "array-contains", normalizedSearch)
+				);
+
+			} 
+			/* ========================= */
+			/* NORMAL PAGINATION */
+			/* ========================= */
+			else {
+
+				if (page > 0 && previousCursor) {
+
 					q = query(
 						collection(db, "products"),
-						where("barcode", "==", search),
-						limit(1)
-					);
-				} else if (search) {
-					const normalizedSearch = search
-						.toLowerCase()
-						.normalize("NFD")
-						.replace(/[\u0300-\u036f]/g, "")
-						.trim();
-
-					q = query(
-						collection(db, "products"),
-						where("searchTokens", "array-contains", normalizedSearch),
+						orderBy("name_lower"),
+						startAfter(previousCursor), // 👈 ahora sí correcto
 						limit(pageSize)
 					);
-				}
-				/* ========================= */
-				/* NORMAL PAGINATION */
-				/* ========================= */
 
-				else {
+				} else {
 
-					if (page > 0 && previousCursor) {
-
-						q = query(
-							collection(db, "products"),
-							orderBy("name_lower"),
-							startAfter(previousCursor),
-							limit(pageSize)
-						);
-
-					} else {
-
-						q = query(
-							collection(db, "products"),
-							orderBy("name_lower"),
-							limit(pageSize)
-						);
-
-					}
+					q = query(
+						collection(db, "products"),
+						orderBy("name_lower"),
+						limit(pageSize)
+					);
 
 				}
 
-				const snapshot = await getDocs(q);
-				
-				const products = snapshot.docs.map(serializeFirestoreDoc);
-				const lastVisible = snapshot.docs[snapshot.docs.length - 1];
-				const cursor = lastVisible?.data()?.name_lower || null;
-
-				dispatch(setProductsPage({
-					items: products,
-					page,
-					pageSize,
-					cursor
-				}));
-
-			} catch (error) {
-				console.error(error);
+				countQuery = query(collection(db, "products"));
 			}
 
-			dispatch(stopLoading());
+			/* ========================= */
+			/* FETCH DATA */
+			/* ========================= */
 
-		};
+			const [snapshot, countSnapshot] = await Promise.all([
+				getDocs(q),
+				getCountFromServer(countQuery),
+			]);
+
+			const products = snapshot.docs.map(serializeFirestoreDoc);
+
+			// 👇 IMPORTANTE: guardar el doc completo
+			const lastVisible = snapshot.docs[snapshot.docs.length - 1] || null;
+
+			const total = countSnapshot.data().count;
+
+			dispatch(setProductsPage({
+				items: products,
+				page,
+				pageSize,
+				cursor: lastVisible?.data()?.name_lower || null, // 👈 FIX
+				total, // 👈 para DataGrid
+			}));
+
+		} catch (error) {
+			console.error(error);
+		}
+
+		dispatch(stopLoading());
+	};

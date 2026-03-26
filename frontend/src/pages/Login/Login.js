@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -11,7 +11,6 @@ import { loginThunk } from "../../store/features/auth/authSlice";
 
 
 // Firebase
-import ScreenBlocker from "../../components/ScreenBlocker";
 import LoginForm from "../../components/LoginForm";
 
 const Login = () => {
@@ -22,7 +21,7 @@ const Login = () => {
 		(state) => state.auth
 	);
 
-	const { loading: isLoading, loadingMessage } = useSelector(
+	const { loading: isLoading } = useSelector(
 		(state) => state.ui
 	);
 
@@ -68,11 +67,6 @@ const Login = () => {
 					errorMessage={error}
 				/>
 			</Box>
-
-			<ScreenBlocker
-				open={isLoading}
-				message={loadingMessage}
-			/>
 		</>
 	);
 }

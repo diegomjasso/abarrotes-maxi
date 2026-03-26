@@ -19,7 +19,7 @@ const TableWeb = ({
     /* DESKTOP VERSION (DataGrid) */
     /* ========================= */
     const columns = [
-        { field: "name", headerName: "Producto", flex: 1 },
+        { field: "name", headerName: "Producto", flex: 1, minWidth: 300 },
         { field: "brand", headerName: "Marca", flex: 1 },
         { field: "price", headerName: "Precio", flex: 1 },
         {

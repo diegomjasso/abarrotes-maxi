@@ -1,3 +1,6 @@
+@use "../variables.scss" as *;
+@use "../fonts.scss";
+
 .paper-precios {
 	display: flex;
 	flex-direction: column;
@@ -24,4 +27,10 @@
 p.sale-price-cell {
 	color: #d67900 !important; /* amarillo suave */
 	font-weight: bold !important;
+}
+
+.button-add-mobile-icon {
+  border-style: solid !important;
+  font-size: 4rem !important;
+  border-width: 2px !important;
 }
