@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Container, Paper, Box, CircularProgress } from "@mui/material";
+import { Container, Paper } from "@mui/material";
 
 import CatalogHeader from "../../components/catalog/CatalogHeader";
 import CatalogToolbar from "../../components/catalog/CatalogToolbar";
@@ -14,6 +14,8 @@ import {
 	updateProductThunk
 } from "../../store/features/products/productsThunk";
 import { setSearchTerm } from "../../store/features/products/productsSlice";
+
+import "./Catalog.scss";
 
 const CatalogPage = () => {
 
@@ -34,9 +36,12 @@ const CatalogPage = () => {
 	const [openModal, setOpenModal] = useState(false);
 	const [editingProduct, setEditingProduct] = useState(null);
 
+	const refetch = () => {
+		dispatch(fetchProductsPaginatedThunk(query));
+	};
 	// fetch products
 	useEffect(() => {
-		dispatch(fetchProductsPaginatedThunk(query));
+		refetch();
 	}, [query, dispatch]);
 
 	// debounce search
@@ -57,15 +62,20 @@ const CatalogPage = () => {
 	}, [search]);
 
 	const handleDelete = (id) => {
-		dispatch(deleteProductThunk(id));
+		dispatch(deleteProductThunk(id)).then(refetch);
 	};
 
 	const handleSave = (args) => {
-		dispatch(createProductThunk(args));
+		dispatch(createProductThunk(args)).then(refetch);
 	};
 
 	const handleEdit = (id, args) => {
-		dispatch(updateProductThunk(id, args));
+		dispatch(updateProductThunk(id, args)).then(refetch);
+	};
+
+	const handleSetOpenModal = (status) => {
+		setOpenModal(status);
+		refetch();
 	};
 
 	return (
@@ -85,47 +95,31 @@ const CatalogPage = () => {
 				}}
 			/>
 
-			<Paper sx={{ height: 600, p: 2 }}>
-
-				{loading ? (
-
-					<Box
-						display="flex"
-						justifyContent="center"
-						alignItems="center"
-						height="100%"
-					>
-						<CircularProgress />
-					</Box>
-
-				) : (
-					<ProductsTable
-						products={products}
-						rowCount={totalProducts}
-						loading={loading}
-						paginationModel={{ page: query.page, pageSize: query.pageSize }}
-						onEdit={(product) => {
-							setEditingProduct(product);
-							setOpenModal(true);
-						}}
-						onDelete={handleDelete}
-						onPaginationModelChange={(model) => {
-							setQuery(prev => ({
-								...prev,
-								page: model.page,
-								pageSize: model.pageSize
-							}));
-						}}
-					/>
-
-				)}
-
+			<Paper className="paper-table">
+				<ProductsTable
+					products={products}
+					rowCount={totalProducts}
+					loading={loading}
+					paginationModel={{ page: query.page, pageSize: query.pageSize }}
+					onEdit={(product) => {
+						setEditingProduct(product);
+						setOpenModal(true);
+					}}
+					onDelete={handleDelete}
+					onPaginationModelChange={(model) => {
+						setQuery(prev => ({
+							...prev,
+							page: model.page,
+							pageSize: model.pageSize
+						}));
+					}}
+				/>
 			</Paper>
 
 			<ProductModal
 				open={openModal}
-				onClose={() => setOpenModal(false)}
-				onSuccess={() => dispatch(fetchProductsPaginatedThunk(query))}
+				onClose={() => handleSetOpenModal(false)}
+				onSuccess={refetch}
 				onSave={handleSave}
 				onEdit={handleEdit}
 				initialData={editingProduct}

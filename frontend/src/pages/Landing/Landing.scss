@@ -152,7 +152,6 @@
 			animation: coldFade 10s ease-in-out infinite;
 		}
 
-		// 🌊 BORDE INFERIOR PARALLAX
 		.wave {
 			position: absolute;
 			bottom: 0;
@@ -163,7 +162,7 @@
 			border-top-left-radius: 50% 100px;
 			border-top-right-radius: 50% 100px;
 			z-index: 1;
-			animation: waveMove 8s linear infinite;
+			animation: waveMove 6s linear infinite alternate;
 		}
 
 		.product {

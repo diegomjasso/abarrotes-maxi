@@ -7,7 +7,9 @@ import {
   Tooltip,
   Dialog,
   DialogTitle,
-  DialogContent
+  DialogContent,
+  useMediaQuery,
+  useTheme
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -38,12 +40,23 @@ const CatalogToolbar = ({ search, setSearch, onAdd, onSearch }) => {
       onSearch(search);
     }
   };
-
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const label = isMobile ? "Buscar ..."
+    : "Buscar por nombre, marca o código (Enter para buscar)";
+  const buttonToAdd = isMobile ? (<Button className="button-add-mobile-icon"><AddIcon /></Button>)
+    : (<Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={onAdd}
+        >
+          Agregar
+        </Button>);
   return (
     <>
       <Box sx={{ mb: 3, display: "flex", gap: 2 }}>
         <TextField
-          label="Buscar por nombre, marca o código"
+          label={label}
           fullWidth
           value={search}
           inputRef={barcodeInputRef}
@@ -60,14 +73,14 @@ const CatalogToolbar = ({ search, setSearch, onAdd, onSearch }) => {
                 </Tooltip>
 
                 {/* 📷 Cámara */}
-                <Tooltip title="Escanear con cámara">
+                <Tooltip title="Escanear con cámara" className="catalog-camara-icon">
                   <IconButton onClick={() => setOpenScanner(true)}>
                     <CameraAltIcon />
                   </IconButton>
                 </Tooltip>
 
                 {/* 📡 Lector Bluetooth */}
-                <Tooltip title="Usar lector Bluetooth">
+                <Tooltip title="Usar lector Bluetooth" className="catalog-lector-icon">
                   <IconButton onClick={activateScannerMode}>
                     <BluetoothSearchingIcon />
                   </IconButton>
@@ -77,13 +90,7 @@ const CatalogToolbar = ({ search, setSearch, onAdd, onSearch }) => {
           }}
         />
 
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={onAdd}
-        >
-          Agregar
-        </Button>
+        {buttonToAdd}
       </Box>
 
       {/* ========================= */}

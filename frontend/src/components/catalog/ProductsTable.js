@@ -11,8 +11,6 @@ const ProductsTable = ({
 	products,
 	onEdit,
 	onDelete,
-
-	/* 🔥 NUEVO */
 	rowCount,
 	paginationModel,
 	onPaginationModelChange,
