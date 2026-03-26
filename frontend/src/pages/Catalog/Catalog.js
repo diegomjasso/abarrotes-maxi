@@ -42,6 +42,7 @@ const CatalogPage = () => {
 	// fetch products
 	useEffect(() => {
 		refetch();
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [query, dispatch]);
 
 	// debounce search
