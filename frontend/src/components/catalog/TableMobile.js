@@ -48,19 +48,21 @@ const TableMobile = ({
 							Precio de venta: $ {product.salePrice || 0}
 						</Typography>
 
-						<Typography variant="body2">
-							Stock:
+						<Box display="flex" alignItems="center" gap={1}>
+							<Typography variant="body2">
+								Stock:
+							</Typography>
+
 							<Chip
 								label={product.stock || ""}
 								size="small"
 								color={
-									product.stock && product.stock <= 10
-										? "error"
-										: "success"
+								product.stock && product.stock <= 10
+									? "error"
+									: "success"
 								}
-								sx={{ ml: 1 }}
 							/>
-						</Typography>
+						</Box>
 
 						<Typography variant="body2">
 							Código: {product.barcode || "—"}

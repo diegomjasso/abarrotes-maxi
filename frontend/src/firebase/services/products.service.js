@@ -10,52 +10,21 @@ import {
 	where,
 	limit,
 	orderBy,
-	startAfter,
 	getCountFromServer,
 } from "firebase/firestore";
 
 import { db } from "../config/firebaseConfig";
 import Validators from "../validators";
+import { serializeFirestoreData } from "../../utils/serializeFirestoreData";
 
 const productsCollection = collection(db, "products");
+/************************/
+/* SERVICES */
+/***********************/
 
 /* ========================= */
-/* SEARCH PRODUCTS BY PAGE */
+/* COUNT PRODUCTS */
 /* ========================= */
-export const getProductsPaginated = async (
-	lastDoc = null,
-	pageSize = 10
-) => {
-	let q;
-
-	if (lastDoc) {
-		q = query(
-			collection(db, "products"),
-			orderBy("name_lower"),
-			startAfter(lastDoc),
-			limit(pageSize)
-		);
-	} else {
-		q = query(
-			collection(db, "products"),
-			orderBy("name_lower"),
-			limit(pageSize)
-		);
-	}
-
-	const snapshot = await getDocs(q);
-
-	const products = snapshot.docs.map(doc => ({
-		id: doc.id,
-		...doc.data()
-	}));
-
-	const lastVisible =
-		snapshot.docs[snapshot.docs.length - 1];
-
-	return { products, lastVisible };
-};
-
 export const getProductsCount = async () => {
   const coll = collection(db, "products");
   const snapshot = await getCountFromServer(coll);
@@ -65,23 +34,37 @@ export const getProductsCount = async () => {
 /* ========================= */
 /* SEARCH PRODUCTS */
 /* ========================= */
-export const searchProducts = async (searchTerm) => {
-	if (!searchTerm) return [];
+export const searchProducts = async (search) => {
+	let q;
 
-	const term = searchTerm.toLowerCase();
+	if (search) {
+		const normalizedSearch = search
+			.toLowerCase()
+			.normalize("NFD")
+			.replace(/[\u0300-\u036f]/g, "")
+			.trim();
 
-	const q = query(
-		productsCollection,
-		where("searchTokens", "array-contains", term),
-		limit(20)
-	);
+		q = query(
+			collection(db, "products"),
+			where("searchTokens", "array-contains", normalizedSearch),
+			orderBy("name_lower"),
+			limit(200)
+		);
+
+		} else {
+
+		q = query(
+			collection(db, "products"),
+			orderBy("name_lower"),
+			limit(200)
+		);
+	}
 
 	const snapshot = await getDocs(q);
 
-	return snapshot.docs.map(doc => ({
-		id: doc.id,
-		...doc.data(),
-	}));
+	const products = snapshot.docs.map(serializeFirestoreData);
+
+	return products;
 };
 
 /* ========================= */
@@ -98,7 +81,7 @@ export const createProduct = async (productData) => {
 	}
 
 	const docRef = await addDoc(productsCollection, {
-		...productData,
+		...serializeFirestoreData(productData),
 		barcodes: productData.barcodes || [],
 		isActive: productData.isActive ?? true,
 		createdAt: new Date(),
@@ -142,7 +125,6 @@ export const updateProduct = async (id, updatedData) => {
 	Validators.validateProduct(updatedData, true);
 
 	const productDoc = doc(db, "products", id);
-
 	await updateDoc(productDoc, {
 		...updatedData,
 		updatedAt: new Date(),

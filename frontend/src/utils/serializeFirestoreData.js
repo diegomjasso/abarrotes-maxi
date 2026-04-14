@@ -1,15 +1,22 @@
-export const serializeFirestoreData = (data) => {
-    const result = {};
+export const serializeFirestoreData = (doc) => {
 
-    for (let key in data) {
-        const value = data[key];
+	const data = doc.data();
 
-        if (value && typeof value.toDate === "function") {
-            result[key] = value.toDate().toISOString();
-        } else {
-            result[key] = value;
-        }
-    }
+	const cleanData = {};
 
-    return result;
+	for (const key in data) {
+
+		const value = data[key];
+
+		if (value && typeof value.toDate === "function") {
+			cleanData[key] = value.toDate().toISOString();
+		} else {
+			cleanData[key] = value;
+		}
+	}
+
+	return {
+		id: doc.id,
+		...cleanData,
+	};
 };
