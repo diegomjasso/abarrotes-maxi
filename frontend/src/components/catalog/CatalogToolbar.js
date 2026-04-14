@@ -21,7 +21,7 @@ import BarcodeScanner from "../shared/BarcodeScanner";
 
 import "../Components.scss";
 
-const CatalogToolbar = ({ search, setSearch, onAdd, onSearch }) => {
+const CatalogToolbar = ({ search, setSearch, onAdd }) => {
   const barcodeInputRef = useRef(null);
   const [openScanner, setOpenScanner] = useState(false);
 
@@ -37,9 +37,10 @@ const CatalogToolbar = ({ search, setSearch, onAdd, onSearch }) => {
   /* ========================= */
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      onSearch(search);
+      setSearch(search);
     }
   };
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const label = isMobile ? "Buscar ..."
@@ -67,7 +68,7 @@ const CatalogToolbar = ({ search, setSearch, onAdd, onSearch }) => {
               <>
                 {/* 🔍 Buscar manual */}
                 <Tooltip title="Buscar">
-                  <IconButton onClick={() => onSearch(search)}>
+                  <IconButton onClick={() => setSearch(search)}>
                     <SearchIcon />
                   </IconButton>
                 </Tooltip>
@@ -106,7 +107,6 @@ const CatalogToolbar = ({ search, setSearch, onAdd, onSearch }) => {
           <BarcodeScanner
             onDetected={(code) => {
               setSearch(code);
-              onSearch(code); // 🔥 búsqueda automática
               setOpenScanner(false);
             }}
           />

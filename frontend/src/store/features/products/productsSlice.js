@@ -1,13 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+	allItems: [],
 	items: [],
 	total: 0,
 	page: 0,
 	pageSize: 10,
-	cursors: {},
-	search: "",
-	selectedProduct: null,  // Producto seleccionado para editar/ver
+	selectedProduct: null
 };
 
 const productsSlice = createSlice({
@@ -19,25 +18,33 @@ const productsSlice = createSlice({
 		/* SET PRODUCTS (FETCH)      */
 		/* ========================= */
 		setProducts: (state, action) => {
-			state.items = action.payload;
+			state.allItems = action.payload;
+			state.total = action.payload.length;
+
+			// 👇 recalcular página actual automáticamente
+			const start = state.page * state.pageSize;
+			const end = start + state.pageSize;
+
+			state.items = state.allItems.slice(start, end);
 		},
 		setProductsPage: (state, action) => {
-			const { items, total, page, pageSize, cursor } = action.payload;
+			const { page, pageSize } = action.payload;
 
-			state.items = items;
-			state.total = total;
 			state.page = page;
 			state.pageSize = pageSize;
 
-			state.cursors = {
-				...state.cursors,
-				[page]: cursor
-			};
+			const start = page * pageSize;
+			const end = start + pageSize;
+
+			state.items = state.allItems.slice(start, end);
 		},
-		setSearchTerm: (state, action) => {
-			state.search = action.payload;
+		resetPagination: (state) => {
 			state.page = 0;
-			state.cursors = {};
+
+			const start = 0;
+			const end = state.pageSize;
+
+			state.items = state.allItems.slice(start, end);
 		}
 	},
 });
@@ -48,7 +55,7 @@ const productsSlice = createSlice({
 export const {
 	setProducts,
 	setProductsPage,
-	setSearchTerm
+	resetPagination,
 } = productsSlice.actions;
 
 /* ========================= */

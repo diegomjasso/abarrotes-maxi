@@ -12,7 +12,8 @@ import {
     getProductById,
     updateProduct,
     deleteProduct,
-    findByBarcode
+    findByBarcode,
+    searchProducts
 } from './products.service'
 
 export const Users = {
@@ -29,7 +30,8 @@ export const Products = {
     getProductById,
     updateProduct,
     deleteProduct,
-    findByBarcode
+    findByBarcode,
+    searchProducts
 }
 
 const Services = {

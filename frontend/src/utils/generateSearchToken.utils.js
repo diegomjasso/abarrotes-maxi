@@ -1,6 +1,18 @@
 export const generateSearchTokens = (product) => {
 	const tokens = new Set();
 
+	const normalize = (text) =>
+		text
+			.toLowerCase()
+			.normalize("NFD")
+			.replace(/[\u0300-\u036f]/g, "")
+			.trim();
+
+	const addToken = (token) => {
+		if (!token) return;
+		tokens.add(token);
+	};
+
 	const fields = [
 		product.name,
 		product.brand,
@@ -11,17 +23,36 @@ export const generateSearchTokens = (product) => {
 	fields.forEach((field) => {
 		if (!field) return;
 
-		const value = field.toLowerCase();
+		const value = normalize(field);
 
-		// Prefijos progresivos
-		for (let i = 1; i <= value.length; i++) {
-			tokens.add(value.substring(0, i));
-		}
+		// dividir palabras
+		const words = value.split(/\s+/);
 
-		// También dividir por palabras
-		value.split(" ").forEach(word => {
-			for (let i = 1; i <= word.length; i++) {
-				tokens.add(word.substring(0, i));
+		words.forEach((word) => {
+			if (!word) return;
+
+			addToken(word);
+
+			/* ========================= */
+			/* NUMEROS Y UNIDADES 🔥 */
+			/* ========================= */
+
+			// detectar números tipo 2.5, 600ml, 1lt, etc
+			const match = word.match(/^(\d+(\.\d+)?)([a-z]*)$/);
+
+			if (match) {
+				const number = match[1]; // 2.5
+				const unit = match[3];   // lts, ml, etc
+
+				addToken(number); // 👉 "2.5"
+
+				if (unit) {
+					addToken(`${number}${unit}`); // "2.5lts"
+					addToken(`${number} ${unit}`); // "2.5 lts"
+				}
+
+				// variantes comunes
+				addToken(number.replace(".", "_")); // "2_5"
 			}
 		});
 	});
