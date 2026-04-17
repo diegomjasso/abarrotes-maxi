@@ -22,7 +22,7 @@ import PaymentsIcon from "@mui/icons-material/Payments";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 
-import { createSaleThunk } from "../../store/features/sales/salesThunk";
+// import { createSaleThunk } from "../../store/features/sales/salesThunk";
 import { printTicket } from "../../utils/printTicket";
 
 import "../Components.scss";

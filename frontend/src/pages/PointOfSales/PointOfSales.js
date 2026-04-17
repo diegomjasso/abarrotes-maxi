@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Container,
   Typography,
@@ -14,7 +14,7 @@ import POSPaymentModal from "../../components/pointOfSales/POSPaymentModal";
 
 import { addItemToSale } from "../../store/features/sales/salesSlice";
 
-const IVA = 0.16;
+//const IVA = 0.16;
 
 const PointOfSales = () => {
 	const [search, setSearch] = useState("");
