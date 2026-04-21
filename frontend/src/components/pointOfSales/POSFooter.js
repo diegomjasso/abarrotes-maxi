@@ -5,6 +5,7 @@ import "../Components.scss";
 const POSFooter = ({ onOpenPayment }) => {
 
 	const total = useSelector((state) => state.sales.totalAmount);
+	const finalTotal = useSelector((state) => state.sales.finalTotal);
 	const items = useSelector((state) => state.sales.carItemsSelcted);
 
 	const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
@@ -35,7 +36,7 @@ const POSFooter = ({ onOpenPayment }) => {
 			<div className="actions">
 
 				<div className="total">
-					${total.toFixed(2)}
+					${finalTotal.toFixed(2)}
 				</div>
 
 				<button

@@ -46,7 +46,8 @@ const ProductModal = ({
 		stock: "",
 		barcode: "",
 		barcodes: "",
-		isActive: true
+		isActive: true,
+		isInBulk: false
 	});
 
 	const [openScanner, setOpenScanner] = useState(false);
@@ -155,6 +156,7 @@ const ProductModal = ({
 			name_lower: product.name.toLowerCase(),
 			brand_lower: product.brand.toLowerCase(),
 			searchTokens: generateSearchTokens(product),
+			isInBulk: product.isInBulk
 		};
 
 		if (product.id) {
@@ -326,6 +328,22 @@ const ProductModal = ({
 									/>
 								}
 								label="Producto Activo"
+							/>
+
+							<FormControlLabel
+								control={
+									<Switch
+										checked={product.isInBulk}
+										onChange={(e) =>
+											setProduct({
+												...product,
+												isInBulk:
+													e.target.checked
+											})
+										}
+									/>
+								}
+								label="Producto A Granel"
 							/>
 
 						</Stack>

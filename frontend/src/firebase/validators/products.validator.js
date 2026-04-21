@@ -47,6 +47,11 @@ export const validateProduct = (product, isUpdate = false) => {
     errors.isActive = "isActive debe ser booleano";
   }
 
+  if (product.isInBulk !== undefined &&
+    typeof product.isInBulk !== "boolean") {
+      errors.isInBulk = "isInBulk debe ser booleano"
+  }
+
   if (Object.keys(errors).length > 0) {
     const error = new Error("Error de validación");
     error.validationErrors = error;
