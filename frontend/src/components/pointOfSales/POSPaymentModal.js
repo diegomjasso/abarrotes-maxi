@@ -9,20 +9,21 @@ import {
 } from "@mui/material";
 
 import DeleteIcon from "@mui/icons-material/Delete";
-
-import { useSelector, useDispatch } from "react-redux";
-import { useState, useMemo } from "react";
-import {
-	completeSale,
-	removeItemFromSale,
-	setPaymentMethod
-} from "../../store/features/sales/salesSlice";
-
 import PaymentsIcon from "@mui/icons-material/Payments";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 
-// import { createSaleThunk } from "../../store/features/sales/salesThunk";
+import { useSelector, useDispatch } from "react-redux";
+import { useState, useMemo } from "react";
+
+import {
+	completeSale,
+	removeItemFromSale,
+	setPaymentMethod,
+	updateFinalTotalAmount,
+	updateProductSalePrice
+} from "../../store/features/sales/salesSlice";
+
 import { printTicket } from "../../utils/printTicket";
 
 import "../Components.scss";
@@ -33,29 +34,44 @@ const POSPaymentModal = ({ open, onClose }) => {
 
 	const items = useSelector((state) => state.sales.carItemsSelcted);
 	const total = useSelector((state) => state.sales.totalAmount);
+	const finalTotal = useSelector((state) => state.sales.finalTotal);
 	const paymentMethod = useSelector((state) => state.sales.paymentMethod);
 	const user = useSelector((state) => state.auth.user);
 
 	const [cash, setCash] = useState("");
+	const [commissionRate, setCommissionRate] = useState(0.04);
+
+	const handleWeightChange = ({ ind, weight }) => {
+		dispatch(updateProductSalePrice({ind: ind, weight }));
+		dispatch(updateFinalTotalAmount());
+	};
 
 	const change = useMemo(() => {
 		const cashValue = parseFloat(cash) || 0;
-		return cashValue - total;
-	}, [cash, total]);
+		return cashValue - finalTotal;
+	}, [cash, finalTotal]);
+
+	const commissionAmount = useMemo(() => {
+		if (paymentMethod !== "card") return 0;
+		return total * commissionRate;
+	}, [total, commissionRate, paymentMethod]);
 
 	const handlePay = () => {
 
-		const saleData = {
+		let saleData = {
 			carSaleProducts: items.map(item => ({
 				id: item.id,
 				name: item.name,
-				price: Number(item.price),
-				quantity: item.quantity,
+				price: Number(item.salePrice),
+				isInBulk: item.isInBulk || false,
+				weight: item.weight || 1
 			})),
-			totalAmount: Number(total),
+
+			totalAmount: Number(finalTotal),
 			paymentMethod,
 			saleStatus: "succeeded",
 			dateOfSale: new Date(),
+
 			saller: {
 				id: user.id,
 				name: user.name,
@@ -64,11 +80,16 @@ const POSPaymentModal = ({ open, onClose }) => {
 			}
 		};
 
-		console.log("SALE DATA:", saleData);
+		if (paymentMethod === "card") {
+			saleData.commission = {
+				amount: commissionAmount,
+				rate: commissionRate
+			};
+		}
 
-		//dispatch(createSaleThunk(saleData)); // 🔥 GUARDAR EN FIREBASE
-		printTicket(saleData); // IMPRIMIR TICKET
-		dispatch(completeSale()); // limpiar carrito
+		printTicket(saleData);
+
+		dispatch(completeSale());
 
 		setCash("");
 		onClose();
@@ -80,6 +101,7 @@ const POSPaymentModal = ({ open, onClose }) => {
 
 	const handlePaymentSelect = (method) => {
 		dispatch(setPaymentMethod(method));
+		dispatch(updateFinalTotalAmount());
 	};
 
 	return (
@@ -93,28 +115,65 @@ const POSPaymentModal = ({ open, onClose }) => {
 
 					{/* LISTA */}
 					<div className="list">
-						{items.map((item) => (
-							<div key={item.id} className="item">
+						{
+							items.map((item, ind) => {
 
-								<div className="info">
-									<span>{item.name} x{item.quantity}</span>
-									<span>${(item.price * item.quantity).toFixed(2)}</span>
+							const itemTotal = item.isInBulk
+								? (item.salePrice * (item.weight || 1))
+								: item.salePrice;
+
+							return (
+								<div key={item.id} className="item-block">
+
+									{/* 🔥 ROW 1 */}
+									<div className="item-header">
+										<span className="name">
+											{item.name}
+											{!item.isInBulk && ` x${item.weight}`}
+										</span>
+
+										<span className="price">
+											${itemTotal.toFixed(2)}
+										</span>
+									</div>
+
+									{/* 🔥 ROW 2 SOLO BULK */}
+									{item.isInBulk && (
+										<div className="item-weight">
+											<TextField
+												size="small"
+												type="number"
+												label="Peso (kg)"
+												inputProps={{ step: 0.01, min: 0.01 }}
+												value={item.weight || ""}
+												onChange={(e, i = ind) =>
+													handleWeightChange({
+														ind: ind,
+														weight: e.target.value
+													})
+												}
+											/>
+										</div>
+									)}
+
+									{/* DELETE */}
+									<div className="item-actions">
+										<IconButton onClick={() => handleRemove(item.id)}>
+											<DeleteIcon />
+										</IconButton>
+									</div>
+
 								</div>
-
-								<IconButton onClick={() => handleRemove(item.id)}>
-									<DeleteIcon />
-								</IconButton>
-
-							</div>
-						))}
+							);
+						})}
 					</div>
 
 					{/* TOTAL */}
 					<div className="total">
-						Total: ${total.toFixed(2)}
+						Total: ${finalTotal.toFixed(2)}
 					</div>
 
-					{/* 🔥 MÉTODOS DE PAGO */}
+					{/* MÉTODOS */}
 					<div className="payment-methods">
 
 						<button
@@ -143,25 +202,47 @@ const POSPaymentModal = ({ open, onClose }) => {
 
 					</div>
 
-					{/* 💵 SOLO SI ES EFECTIVO */}
+					{/* EFECTIVO */}
 					{paymentMethod === "cash" && (
-						<>
-							<div className="cash">
-								<TextField
-									fullWidth
-									label="Pago con efectivo"
-									type="number"
-									value={cash}
-									onChange={(e) => setCash(e.target.value)}
-								/>
-							</div>
+						<div className={`ex-change ${cash && change < 0 ? "invalid" : "valid"}`}>
+							
+							<TextField
+								fullWidth
+								label="Pago con efectivo"
+								type="number"
+								value={cash}
+								onChange={(e) => setCash(e.target.value)}
+							/>
 
 							{cash && (
-								<div className={`change ${change >= 0 ? "positive" : "negative"}`}>
-									Cambio: ${change.toFixed(2)}
+								<div className="ex-row">
+									<span>Cambio</span>
+									<span className={`change ${change >= 0 ? "positive" : "negative"}`}>
+										${change.toFixed(2)}
+									</span>
 								</div>
 							)}
-						</>
+						</div>
+					)}
+
+					{/* TARJETA */}
+					{paymentMethod === "card" && (
+						<div className="commission">
+							<div className="commission-row">
+								<span>Comisión ({(commissionRate * 100).toFixed(0)}%)</span>
+								<span>+${commissionAmount.toFixed(2)}</span>
+							</div>
+
+							<TextField
+								label="% Comisión"
+								type="number"
+								size="small"
+								value={(commissionRate * 100)}
+								onChange={(e) =>
+									setCommissionRate(Number(e.target.value) / 100)
+								}
+							/>
+						</div>
 					)}
 
 				</div>

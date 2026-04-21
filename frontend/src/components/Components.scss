@@ -155,7 +155,7 @@ p.sale-price-cell {
 	width: calc(100% - 40px);
 	max-width: 650px;
 
-	background: linear-gradient(135deg, #ffffff, #f7f7f7);
+	background: #c2cfe1;
 	padding: 12px 18px;
 
 	display: flex;
@@ -163,9 +163,12 @@ p.sale-price-cell {
 	align-items: center;
 
 	border-radius: 18px;
-	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+	box-shadow: 0 10px 18px rgba(0, 0, 0, 0.25);
 
-	z-index: 1300;
+    border-color: #aabcd3;
+    z-index: 1300;
+    border-width: 1px;
+    border-style: solid;
 
 	.cart-info {
 		display: flex;
@@ -235,7 +238,7 @@ p.sale-price-cell {
 
 	.button {
 		background: #2e7d32;
-		color: #fff;
+		color: #000000;
 		border-radius: 12px;
 		padding: 10px 16px;
 		font-weight: 600;
@@ -283,7 +286,7 @@ p.sale-price-cell {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
 		gap: 10px;
-		margin-top: 16px;
+		margin: 16px 0;
 	}
 
 	.method {
@@ -328,31 +331,105 @@ p.sale-price-cell {
 		margin-top: 12px;
 	}
 
-	.change {
+	.ex-change {
 		margin-top: 10px;
+		padding: 10px;
+		border-radius: 10px;
+
+		// 🔥 estado por defecto (neutral)
+		background: #e8f5e9;
+
+		&.valid {
+			background: #e8f5e9;
+		}
+
+		&.invalid {
+			background: #ffebee;
+		}
+
+		.ex-row {
+			display: flex;
+			justify-content: space-between;
+			font-weight: bold;
+			margin-top: 6px;
+		}
+
+		.change {
+			margin-top: 8px;
+			font-weight: bold;
+
+			&.positive {
+				color: #2e7d32;
+			}
+
+			&.negative {
+				color: #c62828;
+			}
+		}
+	}
+
+	.commission {
+		margin-top: 10px;
+		padding: 10px;
+		background: #fff3e0;
+		border-radius: 10px;
+
+		.commission-row {
+			display: flex;
+			justify-content: space-between;
+			font-weight: bold;
+			margin-bottom: 6px;
+			color: #ef6c00;
+		}
+	}
+
+}
+
+.actions {
+	display: flex;
+	justify-content: space-between;
+	padding: 10px 16px;
+}
+.actions {
+	display: flex;
+	justify-content: space-between;
+	padding: 10px 16px;
+}
+
+.item-block {
+	border-bottom: 1px solid #eee;
+	padding: 10px 0;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.item-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	.name {
+		font-weight: 500;
+	}
+
+	.price {
 		font-weight: bold;
-
-		&.positive {
-			color: #2e7d32;
-		}
-
-		&.negative {
-			color: #c62828;
-		}
 	}
 }
 
-.actions {
-	display: flex;
-	justify-content: space-between;
-	padding: 10px 16px;
-}
-.actions {
-	display: flex;
-	justify-content: space-between;
-	padding: 10px 16px;
+.item-weight {
+	margin-left: 20px; // 🔥 lo que pediste
+
+	input {
+		width: 120px;
+	}
 }
 
+.item-actions {
+	display: flex;
+	justify-content: flex-end;
+}
 // POS Ticket
 
 .ticket {
@@ -379,5 +456,71 @@ p.sale-price-cell {
 	p {
 		text-align: center;
 		margin: 4px 0;
+	}
+
+	.commission {
+		color: #ef6c00;
+		font-weight: bold;
+	}
+}
+
+.navbar {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.title {
+	flex-grow: 1;
+	cursor: pointer;
+	font-weight: bold;
+}
+
+.nav-links {
+	display: flex;
+	gap: 10px;
+}
+
+.user-box {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-right: 10px;
+}
+
+.logout-btn {
+	margin-left: 10px;
+}
+
+/* 🍔 HAMBURGER */
+.menu-button {
+	display: none !important;
+}
+
+/* 📱 DRAWER */
+.drawer {
+	width: 250px;
+	padding: 10px;
+}
+
+/* ========================= */
+/* 📱 RESPONSIVE */
+/* ========================= */
+
+@media (max-width: $mobile) {
+	.nav-links {
+		display: none;
+	}
+
+	.logout-btn {
+		display: none;
+	}
+
+	.menu-button {
+		display: block !important;
+	}
+
+	.user-box {
+		display: none;
 	}
 }

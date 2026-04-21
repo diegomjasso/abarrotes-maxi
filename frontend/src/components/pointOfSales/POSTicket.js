@@ -5,25 +5,65 @@ const POSTicket = ({ sale }) => {
 	return (
 		<div className="ticket">
 
-			<h3>MI TIENDA</h3>
+			<h3>Abarrotes Maxi</h3>
 			<p>--------------------------</p>
 
-			{sale.carSaleProducts.map((item) => (
-				<div key={item.id} className="row">
+			{/* 🔥 LISTA DE PRODUCTOS */}
+			{sale.carSaleProducts.map((item) => {
+
+				const isBulk = item.isInBulk;
+
+				const quantity = isBulk
+					? `${(item.weight * 1000).toFixed(0)} g` // 🔥 gramos
+					: `x${1}`;
+
+				const total = isBulk
+					? item.salePrice * item.weight
+					: item.salePrice;
+
+				return (
+					<div key={item.id} className="row">
+						<span>
+							{item.name} {quantity}
+						</span>
+
+						<span>
+							${total.toFixed(2)}
+						</span>
+					</div>
+				);
+			})}
+
+			<p>--------------------------</p>
+
+			{/* 🔥 SUBTOTAL */}
+			{sale.commission && (
+				<div className="row">
+					<span>Subtotal</span>
 					<span>
-						{item.name} x{item.quantity}
-					</span>
-					<span>
-						${(item.price * item.quantity).toFixed(2)}
+						${(sale.finalTotal - sale.commission.amount).toFixed(2)}
 					</span>
 				</div>
-			))}
+			)}
+
+			{/* 🔥 COMISIÓN */}
+			{sale.commission && (
+				<div className="row commission">
+					<span>
+						Comisión ({(sale.commission.rate * 100).toFixed(0)}%)
+					</span>
+					<span>
+						+${sale.commission.amount.toFixed(2)}
+					</span>
+				</div>
+			)}
 
 			<p>--------------------------</p>
 
+			{/* 🔥 TOTAL FINAL */}
 			<div className="row total">
 				<span>Total</span>
-				<span>${sale.totalAmount.toFixed(2)}</span>
+				<span>${sale.finalTotal.toFixed(2)}</span>
 			</div>
 
 			<p>Método: {sale.paymentMethod}</p>
