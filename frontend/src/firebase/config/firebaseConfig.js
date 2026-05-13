@@ -20,5 +20,5 @@ const firebaseConfig = {
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(app);
-/* 👇 ESTA LÍNEA ES CLAVE */
+
 export const db = getFirestore(app);
