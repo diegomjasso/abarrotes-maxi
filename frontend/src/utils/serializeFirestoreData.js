@@ -1,7 +1,8 @@
 export const serializeFirestoreData = (doc) => {
-
-	const data = doc.data();
-
+	const data =
+		typeof doc.data === "function"
+			? doc.data()
+			: doc;
 	const cleanData = {};
 
 	for (const key in data) {
