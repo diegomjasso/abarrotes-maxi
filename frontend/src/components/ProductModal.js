@@ -149,9 +149,9 @@ const ProductModal = ({
 				? product.barcodes.split(",").map((b) => b.trim())
 				: [],
 			registredBy: {
-				id: user.id,
 				name: user.name,
 				lastname: user.lastname,
+				email: user.email,
 			},
 			name_lower: product.name.toLowerCase(),
 			brand_lower: product.brand.toLowerCase(),
