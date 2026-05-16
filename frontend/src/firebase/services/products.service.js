@@ -42,6 +42,7 @@ export const searchProducts = async (search) => {
 			.toLowerCase()
 			.normalize("NFD")
 			.replace(/[\u0300-\u036f]/g, "")
+			.replace(/[^\w\s]/g, "")
 			.trim();
 
 		q = query(
@@ -50,9 +51,7 @@ export const searchProducts = async (search) => {
 			orderBy("name_lower"),
 			limit(200)
 		);
-
-		} else {
-
+	} else {
 		q = query(
 			collection(db, "products"),
 			orderBy("name_lower"),
@@ -61,34 +60,42 @@ export const searchProducts = async (search) => {
 	}
 
 	const snapshot = await getDocs(q);
-
-	const products = snapshot.docs.map(serializeFirestoreData);
-
-	return products;
+	return snapshot.docs.map(serializeFirestoreData);
 };
-
-/* ========================= */
-/* CREATE PRODUCT */
-/* ========================= */
 
 export const createProduct = async (productData) => {
 	Validators.validateProduct(productData);
 
 	// 🔥 Validar barcode único
 	const existing = await findByBarcode(productData.barcode);
+
 	if (existing && productData.barcode && productData.barcode.length > 0) {
 		throw new Error("El código de barras ya existe");
 	}
 
-	const docRef = await addDoc(productsCollection, {
-		...serializeFirestoreData(productData),
-		barcodes: productData.barcodes || [],
-		isActive: productData.isActive ?? true,
+	// 🔥 Remover id
+	const { id, ...cleanProductData } = productData;
+
+	const data = {
+		...cleanProductData,
+		isInBulk: cleanProductData.isInBulk ?? false,
+		barcodes: cleanProductData.barcodes || [],
+		isActive: cleanProductData.isActive ?? true,
 		createdAt: new Date(),
+	};
+
+	// 🔥 Remover undefined
+	Object.keys(data).forEach((key) => {
+		if (data[key] === undefined) {
+			delete data[key];
+		}
 	});
+
+	const docRef = await addDoc(productsCollection, data);
 
 	return docRef.id;
 };
+
 /* ========================= */
 /* GET ALL PRODUCTS */
 /* ========================= */

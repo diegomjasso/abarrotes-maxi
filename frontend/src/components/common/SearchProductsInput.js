@@ -37,7 +37,7 @@ const SearchProductsInput = ({ search, setSearch, onAdd }) => {
 	/* ========================= */
 	const handleKeyDown = (e) => {
 		if (e.key === "Enter") {
-		setSearch(search);
+			setSearch(search);
 		}
 	};
 
@@ -47,8 +47,8 @@ const SearchProductsInput = ({ search, setSearch, onAdd }) => {
 		? "Buscar ..."
 		: "Buscar por nombre, marca o código (Enter para buscar)";
 	const buttonToAdd = isMobile ? (
-		<Button className="button-add-mobile-icon">
-		<AddIcon />
+		<Button className="button-add-mobile-icon" onClick={onAdd}>
+			<AddIcon />
 		</Button>
 	) : (
 		<Button variant="contained" startIcon={<AddIcon />} onClick={onAdd}>
