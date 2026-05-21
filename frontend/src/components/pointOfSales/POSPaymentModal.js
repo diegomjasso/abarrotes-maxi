@@ -14,14 +14,15 @@ import CreditCardIcon from "@mui/icons-material/CreditCard";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 
 import { useSelector, useDispatch } from "react-redux";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 import {
 	completeSale,
 	removeItemFromSale,
 	setPaymentMethod,
 	updateFinalTotalAmount,
-	updateProductSalePrice
+	updateProductSalePrice,
+	updateCommissionRate
 } from "../../store/features/sales/salesSlice";
 
 import { printTicket } from "../../utils/printTicket";
@@ -33,13 +34,14 @@ const POSPaymentModal = ({ open, onClose }) => {
 	const dispatch = useDispatch();
 
 	const items = useSelector((state) => state.sales.carItemsSelcted);
-	const total = useSelector((state) => state.sales.totalAmount);
 	const finalTotal = useSelector((state) => state.sales.finalTotal);
 	const paymentMethod = useSelector((state) => state.sales.paymentMethod);
 	const user = useSelector((state) => state.auth.user);
+	const commissionAmount = useSelector((state) => state.sales.commissionAmount);
+	const commissionRate = useSelector((state) => state.sales.commissionRate);
 
 	const [cash, setCash] = useState("");
-	const [commissionRate, setCommissionRate] = useState(0.04);
+	const [tempCommissionRate, setTempCommissionRate] = useState(commissionRate * 100); // Estado local para manejar la tasa de comisión en porcentaje
 
 	const handleWeightChange = ({ ind, weight }) => {
 		dispatch(updateProductSalePrice({ind: ind, weight }));
@@ -51,10 +53,17 @@ const POSPaymentModal = ({ open, onClose }) => {
 		return cashValue - finalTotal;
 	}, [cash, finalTotal]);
 
-	const commissionAmount = useMemo(() => {
-		if (paymentMethod !== "card") return 0;
-		return total * commissionRate;
-	}, [total, commissionRate, paymentMethod]);
+	const updateTempCommissionRate = (e) => {
+		const calculatedRate = Number(e.target.value) / 100;
+		setTempCommissionRate(Number(e.target.value));
+		dispatch(updateCommissionRate(calculatedRate));
+	}
+
+	useEffect(() => {
+		if (paymentMethod === "card") 
+			dispatch(updateFinalTotalAmount());
+
+	}, [dispatch, paymentMethod, tempCommissionRate]);
 
 	const handlePay = () => {
 
@@ -88,7 +97,7 @@ const POSPaymentModal = ({ open, onClose }) => {
 		}
 
 		printTicket(saleData);
-
+		console.log("Venta realizada:", saleData);
 		dispatch(completeSale());
 
 		setCash("");
@@ -97,6 +106,7 @@ const POSPaymentModal = ({ open, onClose }) => {
 
 	const handleRemove = (id) => {
 		dispatch(removeItemFromSale(id));
+		dispatch(updateFinalTotalAmount()); 
 	};
 
 	const handlePaymentSelect = (method) => {
@@ -129,7 +139,8 @@ const POSPaymentModal = ({ open, onClose }) => {
 									<div className="item-header">
 										<span className="name">
 											{item.name}
-											{!item.isInBulk && ` x${item.weight}`}
+											{item.isInBulk && ` x ${item.weight || 1}`}
+											{!item.isInBulk && ` x ${item.quantity || 1}`}
 										</span>
 
 										<span className="price">
@@ -237,10 +248,8 @@ const POSPaymentModal = ({ open, onClose }) => {
 								label="% Comisión"
 								type="number"
 								size="small"
-								value={(commissionRate * 100)}
-								onChange={(e) =>
-									setCommissionRate(Number(e.target.value) / 100)
-								}
+								value={tempCommissionRate}
+								onChange={updateTempCommissionRate}
 							/>
 						</div>
 					)}

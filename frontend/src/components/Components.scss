@@ -256,6 +256,14 @@ p.sale-price-cell {
 			cursor: not-allowed;
 		}
 	}
+
+	.button.cancel-sale {
+		background: #c62828;
+
+		&:hover {
+			background: #8e0000;
+		}
+	}
 }
 
 // POS Payment Modal

@@ -33,20 +33,24 @@ const POSFooter = ({ onOpenPayment }) => {
 			</div>
 
 			{/* 💰 LADO DERECHO */}
-			<div className="actions">
-
-				<div className="total">
-					${finalTotal.toFixed(2)}
-				</div>
-
+			<div className="actions">				
 				<button
-					className="button"
+					className="button cancel-sale"
+					onClick={onOpenPayment}
+					disabled={total === 0}
+				>
+					Cancelar
+				</button>
+				<button
+					className="button pay-sale"
 					onClick={onOpenPayment}
 					disabled={total === 0}
 				>
 					Cobrar
 				</button>
-
+				<div className="total">
+					${finalTotal.toFixed(2)}
+				</div>
 			</div>
 
 		</div>

@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     carItemsSelcted: [],
-    commisionRate: 0.04,
+    commissionRate: 0.04,
     commissionAmount: 0,
     totalAmount: 0,
     finalTotal: 0,
@@ -11,15 +11,19 @@ const initialState = {
 };
 
 const calculateTotal = (items) => {
-	return items.reduce((acc, item) => {
+    return items.reduce((acc, item) => {
+        const quantity = item.quantity || 1;
+        const weight = item.weight || 1;
 
-		if (item.isInBulk) {
-			return acc + ((item.salePrice) * (item.weight ? item.weight : 1));
-		}
+        // For bulk products use weight * quantity
+        if (item.isInBulk) {
+            return acc + (item.salePrice * weight * quantity);
+        }
 
-		return acc + item.salePrice;
+        // Regular products use quantity only
+        return acc + (item.salePrice * quantity);
 
-	}, 0);
+    }, 0);
 };
 
 const salesSlice = createSlice({
@@ -36,8 +40,8 @@ const salesSlice = createSlice({
                 state.carItemsSelcted.push({ ...product, quantity: 1 });
             }
 
-            state.totalAmount += product.salePrice;
-            state.finalTotal += product.salePrice;
+            state.totalAmount += (product.salePrice * (product.isInBulk ? (product.weight || 1) : 1));
+            state.finalTotal += product.salePrice * (product.isInBulk ? (product.weight || 1) : 1);
         },
         removeItemFromSale: (state, action) => {
             const productId = action.payload;
@@ -45,8 +49,8 @@ const salesSlice = createSlice({
 
             if (existingItemIndex !== -1) {
                 const item = state.carItemsSelcted[existingItemIndex];
-                state.totalAmount -= item.salePrice * item.quantity;
-                state.finalTotal -= item.salePrice * item.quantity;
+                state.totalAmount -= item.salePrice * (item.isInBulk ? (item.weight || 1) : item.quantity);
+                state.finalTotal -= item.salePrice * (item.isInBulk ? (item.weight || 1) : item.quantity);
                 if (item.quantity > 1) {
                     item.quantity -= 1;
                 } else {
@@ -56,10 +60,10 @@ const salesSlice = createSlice({
         },
         updateFinalTotalAmount: (state, action) => {
             if (state.paymentMethod === 'card' && state.carItemsSelcted.length > 0) {
-                state.commissionAmount = (state.totalAmount * state.commisionRate);
+                state.commissionAmount = (calculateTotal(state.carItemsSelcted) * state.commissionRate);
                 state.finalTotal = calculateTotal(state.carItemsSelcted) + state.commissionAmount;
             } else {
-                state.finalTotal =calculateTotal(state.carItemsSelcted);
+                state.finalTotal = calculateTotal(state.carItemsSelcted);
             }
         },
         setPaymentMethod: (state, action) => {
@@ -69,16 +73,29 @@ const salesSlice = createSlice({
             state.saleStatus = "succeeded";
             state.carItemsSelcted = [];
             state.totalAmount = 0;
-            state.commisionRate = 0.04;
+            state.commissionRate = 0.04;
             state.commissionAmount = 0;
             state.finalTotal = 0;
         },
         updateProductSalePrice: (state, action) => {
             state.carItemsSelcted[action.payload.ind].weight = action.payload.weight;
-        }
+        },
+        updateCommissionRate: (state, action) => {
+            state.commissionRate = action.payload;
+        },
+        restartState: () => initialState,
     }
 });
 
-export const { addItemToSale, removeItemFromSale, setPaymentMethod, completeSale, updateFinalTotalAmount, updateProductSalePrice } = salesSlice.actions;
+export const {
+    addItemToSale,
+    removeItemFromSale,
+    setPaymentMethod,
+    completeSale,
+    updateFinalTotalAmount,
+    updateProductSalePrice,
+    updateCommissionRate,
+    restartState
+} = salesSlice.actions;
 
 export default salesSlice.reducer;
