@@ -1,55 +1,140 @@
-import { Routes, Route } from "react-router-dom";
-import PrivateRoute from "./routes/PrivateRoutes";
+import { useEffect } from "react";
+import { useTheme } from "@mui/material/styles";
 
+import { Routes, Route } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+import PrivateRoute from "./routes/PrivateRoutes";
 
 import Login from "./pages/Login/Login";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Catalog from "./pages/Catalog/Catalog";
 import PointOfSales from "./pages/PointOfSales/PointOfSales";
-//import Inventory from "./pages/Inventory";
-//import Domicilios from "./pages/Domicilios";
 
-import "./App.scss"; // 👉 Archivo SASS principal
 import MainLayout from "./layouts/MainLayouts";
-import GlobalError from "./components/GlobalErrorHandler";
-import Landing from "./pages/Landing/Landing";
-import ScreenBlocker from "./components/ScreenBlocker";
-import { useSelector } from "react-redux";
 
+import GlobalError from "./components/GlobalErrorHandler";
+import ScreenBlocker from "./components/ScreenBlocker";
+import Landing from "./pages/Landing/Landing";
+
+import "./App.scss";
+import { getTheme } from "./themes/theme";
 
 const App = () => {
-	const { loading: isLoading, loadingMessage } = useSelector(
-		(state) => state.ui
-	);
 
-	return (
-		<>
-		 	<GlobalError />
-			<Routes>
-				{/* Ruta pública */}
-				<Route path="/" element={<Landing />} />
-				<Route path="/login" element={<Login />} />
+    const theme = getTheme("dark");
 
-				{/* Rutas privadas con Layout */}
-				<Route
-					element={
-						<PrivateRoute>
-							<MainLayout />
-						</PrivateRoute>
-					}
-				>
-					<Route path="/dashboard" element={<Dashboard />} />
-					<Route path="/catalogo" element={<Catalog />} />
-					<Route path="/punto-de-venta" element={<PointOfSales />} />
-				</Route>
-			</Routes>
-			<ScreenBlocker
-				open={isLoading}
-				message={loadingMessage}
-			/>
-		</>
-	);
-}
+    const {
+        loading: isLoading,
+        loadingMessage,
+    } = useSelector(
+        (state) => state.ui
+    );
 
+    useEffect(() => {
+
+        const root =
+            document.documentElement;
+
+        root.style.setProperty(
+            "--bg",
+            theme.palette.background.default
+        );
+
+        root.style.setProperty(
+            "--surface",
+            theme.palette.background.paper
+        );
+
+        root.style.setProperty(
+            "--text",
+            theme.palette.text.primary
+        );
+
+        root.style.setProperty(
+            "--text-secondary",
+            theme.palette.text.secondary
+        );
+
+        root.style.setProperty(
+            "--primary",
+            theme.palette.primary.main
+        );
+
+        root.style.setProperty(
+            "--primary-hover",
+            theme.palette.primary.dark
+        );
+
+        root.style.setProperty(
+            "--border",
+            theme.palette.border.main
+        );
+
+        root.style.setProperty(
+            "--success",
+            theme.palette.success.main
+        );
+
+        root.style.setProperty(
+            "--success-hover",
+            theme.palette.success.dark
+        );
+
+        root.style.setProperty(
+            "--danger",
+            theme.palette.error.main
+        );
+
+    }, [theme]);
+
+    return (
+        <>
+            <GlobalError />
+
+            <Routes>
+
+                <Route
+                    path="/"
+                    element={<Landing />}
+                />
+
+                <Route
+                    path="/login"
+                    element={<Login />}
+                />
+
+                <Route
+                    element={
+                        <PrivateRoute>
+                            <MainLayout />
+                        </PrivateRoute>
+                    }
+                >
+                    <Route
+                        path="/dashboard"
+                        element={<Dashboard />}
+                    />
+
+                    <Route
+                        path="/catalogo"
+                        element={<Catalog />}
+                    />
+
+                    <Route
+                        path="/punto-de-venta"
+                        element={<PointOfSales />}
+                    />
+                </Route>
+
+            </Routes>
+
+            <ScreenBlocker
+                open={isLoading}
+                message={loadingMessage}
+            />
+        </>
+    );
+};
 
 export default App;

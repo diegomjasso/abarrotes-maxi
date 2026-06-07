@@ -1,16 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
-import {
-  Container,
-  Typography,
-} from "@mui/material";
+import { Container, Typography } from "@mui/material";
 import "./PointOfSales.scss";
-import POSProducts from "../../components/pointOfSales/POSProducts";
+import POSProducts from "../../components/point-of-sales/POSProducts";
 import { useDispatch, useSelector } from "react-redux";
 import { startLoading, stopLoading } from "../../store/features/ui/uiSlice";
 import { fetchProductsFilteredThunk } from "../../store/features/products/productsThunk";
 import { setProductsPage } from "../../store/features/products/productsSlice";
-import POSFooter from "../../components/pointOfSales/POSFooter";
-import POSPaymentModal from "../../components/pointOfSales/POSPaymentModal";
+import POSFooter from "../../components/point-of-sales/POSFooter";
+import POSPaymentModal from "../../components/point-of-sales/POSPaymentModal";
 
 import { addItemToSale } from "../../store/features/sales/salesSlice";
 
@@ -18,7 +15,7 @@ import { addItemToSale } from "../../store/features/sales/salesSlice";
 
 const PointOfSales = () => {
 	const [search, setSearch] = useState("");
-  const [openPayment, setOpenPayment] = useState(false);
+	const [openPayment, setOpenPayment] = useState(false);
 
 	const dispatch = useDispatch();
 
@@ -28,19 +25,19 @@ const PointOfSales = () => {
 	const pageSize = useSelector((state) => state.products.pageSize);
 	//const loading = useSelector((state) => state.ui.loading);
 
-  /* ========================= */
-  /* FETCH (SOLO DATA) */
-  /* ========================= */
-  const refetch = useCallback(() => {
-    dispatch(startLoading());
-    setTimeout(() => {
-      dispatch(fetchProductsFilteredThunk({ search }));
-      dispatch(stopLoading());
-    }, 300);
-    //
-  }, [dispatch, search]);
+	/* ========================= */
+	/* FETCH (SOLO DATA) */
+	/* ========================= */
+	const refetch = useCallback(() => {
+		dispatch(startLoading());
+		setTimeout(() => {
+			dispatch(fetchProductsFilteredThunk({ search }));
+			dispatch(stopLoading());
+		}, 300);
+		//
+	}, [dispatch, search]);
 
-  /* ========================= */
+	/* ========================= */
 	/* FETCH ON SEARCH */
 	/* ========================= */
 	useEffect(() => {
@@ -58,61 +55,78 @@ const PointOfSales = () => {
 		return () => clearTimeout(delay);
 	}, [search, refetch]);
 
-  /* ========================= */
-  /* PAGINACIÓN (REDUX) */
-  /* ========================= */
-  const handlePaginationChange = useCallback((model) => {
-    dispatch(startLoading());
-    setTimeout(() => {
-      dispatch(setProductsPage({
-        page: model.page,
-        pageSize: model.pageSize,
-      }));
-      dispatch(stopLoading());
-    }, 300);
-  }, [dispatch]);
+	/* ========================= */
+	/* PAGINACIÓN (REDUX) */
+	/* ========================= */
+	const handlePaginationChange = useCallback(
+		(model) => {
+			dispatch(startLoading());
+			setTimeout(() => {
+				dispatch(
+					setProductsPage({
+						page: model.page,
+						pageSize: model.pageSize,
+					})
+				);
+				dispatch(stopLoading());
+			}, 300);
+		},
+		[dispatch]
+	);
 
-  const handleSearchChange = useCallback((value) => {
-		setSearch(value);
-		dispatch(setProductsPage({
-			page: 0,
-			pageSize,
-		}));
-	}, [dispatch, pageSize]);
+	const handleSearchChange = useCallback(
+		(value) => {
+			setSearch(value);
+			dispatch(
+				setProductsPage({
+					page: 0,
+					pageSize,
+				})
+			);
+		},
+		[dispatch, pageSize]
+	);
 
-  /* ========================= */
-  /* ADD TO CART */
-  /* ========================= */
-  
-  const handleAddToCart = (product) => {
-    dispatch(addItemToSale(product));
-  };
+	/* ========================= */
+	/* ADD TO CART */
+	/* ========================= */
 
-  return (
-		<Container sx={{ mt: 5 }}>
-      <Typography variant="h4" gutterBottom>
-        Punto de Venta
-      </Typography>
+	const handleAddToCart = (product) => {
+		dispatch(addItemToSale(product));
+	};
 
-      <POSProducts
-        search={search}
-        setSearch={handleSearchChange}
-        products={products}
-        count={totalProducts}
-        paginationModel={{ page, pageSize }}
-        handlePaginationChange={handlePaginationChange}
-        addToCar={handleAddToCart}
-      />
+	return (
+		<Container sx={{ mt: 5 }} className="pos-container">
+			<section className="pos-header">
+				<Typography variant="h4" gutterBottom className="pos-title">
+					Punto de Venta
+				</Typography>
+			</section>
 
-      {/* Aquí iría el carrito y el resumen de la venta */}
-      <POSFooter onOpenPayment={() => setOpenPayment(true)} />
+			<POSProducts
+				search={search}
+				setSearch={handleSearchChange}
+				products={products}
+				count={totalProducts}
+				paginationModel={{ page, pageSize }}
+				handlePaginationChange={handlePaginationChange}
+				addToCar={handleAddToCart}
+				className="pos-products"
+			/>
 
-      <POSPaymentModal
-        open={openPayment}
-        onClose={() => setOpenPayment(false)}
-      />
-    </Container>
-  );
+			{/* Aquí iría el carrito y el resumen de la venta */}
+			<POSFooter
+				className="pos-footer"
+				onOpenPayment={() => setOpenPayment(true)}
+			/>
+
+			<POSPaymentModal
+				className="pos-payment-modal"
+				open={openPayment}
+				onClose={() => setOpenPayment(false)}
+			/>
+		</Container>
+	);
 };
 
 export default PointOfSales;

@@ -1,3 +1,6 @@
+@use "./variables" as *;
+@use "./fonts.scss";
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -41,3 +44,14 @@ html {
   color: #61dafb;
 }
 
+body {
+  background: var(--bg);
+  color: var(--text);
+
+  transition: var(--transition-theme);
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+}

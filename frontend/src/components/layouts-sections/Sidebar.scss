@@ -1,0 +1,77 @@
+@use "../../variables.scss" as *;
+@use "../../fonts.scss";
+
+/* MENU */
+.sidebar {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: 100vh;
+}
+
+.sidebar-menu-top, .sidebar-menu-bottom {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-sm);
+
+	.sidebar-menu-item {
+		&:hover {
+			background: rgba(59, 130, 246, 0.1);
+		}
+
+		&.active {
+			background: var(--primary);
+			color: white;
+		}
+
+		width: 100%;
+		border: none;
+		background: transparent;
+		color: var(--text);
+		display: flex;
+		align-items: center;
+		gap: var(--space-md);
+		padding: 1.2rem 1.4rem;
+		border-radius: 14px;
+		cursor: pointer;
+		transition: 0.2s ease;
+		font-weight: bold !important;
+		font-size: 1rem !important;
+
+		.sidebar-menu-icon {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			margin: 0 1rem;
+		}
+	}
+}
+
+
+
+/* =========================
+   TABLETS
+========================= */
+@media (max-width: $tablet) {
+	.sidebar-menu-top, .sidebar-menu-bottom {
+		width: 100%;
+
+		.sidebar-menu-item {
+			justify-content: center;
+			padding: 1.2rem;
+			display: flex;
+			align-items: center;
+			gap: 0;
+			flex-direction: column;	
+
+			.sidebar-menu-icon {
+				margin: 0.3rem 0;
+			}
+		}
+	}
+}
+
+@media screen and (max-width: $tablet) {
+	
+}

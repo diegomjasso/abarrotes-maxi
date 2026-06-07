@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
 import App from "./App";
@@ -12,18 +12,12 @@ import reportWebVitals from './reportWebVitals'
 import { Provider } from "react-redux";
 import { store } from "./store/app.store";
 
-const theme = createTheme({
-  palette: {
-	mode: "light",
-	primary: { main: "#1976d2" },
-  },
-});
-
+import { getTheme } from "./themes/theme"; // 👉 Archivo de tema personalizado
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-	<ThemeProvider theme={theme}>
+	<ThemeProvider theme={getTheme("dark")}>
 	  <CssBaseline />
 	  <BrowserRouter>
 		<Provider store={store}>

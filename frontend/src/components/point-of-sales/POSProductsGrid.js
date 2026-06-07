@@ -2,6 +2,14 @@ import "../Components.scss";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 const POSProductsGrid = ({ products = [], addToCar }) => {
+	const renderAddToCarButton = addToCar ? (product) => (
+		<button
+			className="cart-button"
+			onClick={() => addToCar(product)}
+		>
+			<ShoppingCartIcon />
+		</button>
+	) : null;
 	return (
 		<div className="pos-products-grid">
 			{products.map((product) => (
@@ -26,12 +34,7 @@ const POSProductsGrid = ({ products = [], addToCar }) => {
 								${product.salePrice?.toFixed(2) || "0.00"}
 							</p>
 
-							<button
-								className="cart-button"
-								onClick={() => addToCar(product)}
-							>
-								<ShoppingCartIcon />
-							</button>
+							{renderAddToCarButton && renderAddToCarButton(product)}
 						</div>
 					</div>
 

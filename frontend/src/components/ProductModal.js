@@ -24,7 +24,7 @@ import { findByBarcode } from "../firebase/services/products.service";
 
 import { useSelector } from "react-redux";
 import { generateSearchTokens } from "../utils/generateSearchToken.utils";
-
+import './Components.scss';
 
 const ProductModal = ({
 	open,
@@ -156,7 +156,7 @@ const ProductModal = ({
 			name_lower: product.name.toLowerCase(),
 			brand_lower: product.brand.toLowerCase(),
 			searchTokens: generateSearchTokens(product),
-			isInBulk: product.isInBulk
+			isInBulk: product.isInBulk !== undefined ? product.isInBulk : false
 		};
 
 		if (product.id) {
@@ -185,7 +185,6 @@ const ProductModal = ({
 				<form onSubmit={handleSubmit}>
 					<DialogContent>
 						<Stack spacing={2} sx={{ mt: 1 }}>
-
 							<TextField
 								label="Nombre"
 								required
@@ -286,14 +285,14 @@ const ProductModal = ({
 									endAdornment: (
 										<>
 											{/* 📷 Cámara */}
-											<Tooltip title="Escanear con cámara">
+											<Tooltip title="Escanear con cámara" className="catalog-camara-icon">
 												<IconButton onClick={() => setOpenScanner(true)}>
 													<CameraAltIcon />
 												</IconButton>
 											</Tooltip>
 
 											{/* 📡 Lector Bluetooth */}
-											<Tooltip title="Usar lector Bluetooth">
+											<Tooltip title="Usar lector Bluetooth" className="catalog-lector-icon">
 												<IconButton onClick={activateScannerMode}>
 													<BluetoothSearchingIcon />
 												</IconButton>

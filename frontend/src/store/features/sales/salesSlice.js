@@ -35,7 +35,11 @@ const salesSlice = createSlice({
             const existingItem = state.carItemsSelcted.find(item => item.id === product.id);
 
             if (existingItem) {
-                existingItem.quantity += 1;
+                if (product.isInBulk) {
+                    existingItem.weight = (existingItem.weight || 1) + (product.weight || 1);
+                } else {
+                    existingItem.quantity += 1;
+                }
             } else {
                 state.carItemsSelcted.push({ ...product, quantity: 1 });
             }
@@ -83,7 +87,7 @@ const salesSlice = createSlice({
         updateCommissionRate: (state, action) => {
             state.commissionRate = action.payload;
         },
-        restartState: () => initialState,
+        restartStateSales: () => initialState,
     }
 });
 
@@ -95,7 +99,7 @@ export const {
     updateFinalTotalAmount,
     updateProductSalePrice,
     updateCommissionRate,
-    restartState
+    restartStateSales
 } = salesSlice.actions;
 
 export default salesSlice.reducer;

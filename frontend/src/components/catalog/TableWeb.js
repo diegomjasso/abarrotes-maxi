@@ -3,75 +3,126 @@ import { DataGrid } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import "../Components.scss";
-import { IconButton } from "@mui/material";
+import "./TableWeb.scss";
+import { IconButton, Chip } from "@mui/material";
 
 const TableWeb = ({
-    products,
-    onEdit,
-    onDelete,
-    rowCount,
-    paginationModel,
-    onPaginationModelChange,
-    loading
+	products,
+	onEdit,
+	onDelete,
+	rowCount,
+	paginationModel,
+	onPaginationModelChange,
+	loading,
 }) => {
-    /* ========================= */
-    /* DESKTOP VERSION (DataGrid) */
-    /* ========================= */
-    const columns = [
-        { field: "name", headerName: "Producto", flex: 1, minWidth: 300 },
-        { field: "brand", headerName: "Marca", flex: 1 },
-        { field: "price", headerName: "Precio", flex: 1 },
-        {
-            field: "salePrice",
-            headerName: "Precio de venta",
-            flex: 1,
-            cellClassName: "sale-price-cell",
-        },
-        { field: "stock", headerName: "Stock", flex: 1 },
-        { field: "barcode", headerName: "Código", flex: 1 },
-        {
-            field: "actions",
-            headerName: "Acciones",
-            sortable: false,
-            filterable: false,
-            flex: 1,
-            renderCell: (params) => (
-                <>
-                    <IconButton onClick={() => onEdit(params.row)}>
+	/* ========================= */
+	/* DESKTOP VERSION (DataGrid) */
+	/* ========================= */
+	
+	const columns = [
+		{
+			field: "name",
+			headerName: "Producto",
+			flex: 2,
+			renderCell: ({ row }) => (
+				<div className="product-cell">
+					<div className="product-details">
+						<div className="product-title">{row.name}</div>
+
+						<div className="product-subtitle">
+							{row.brand || "Sin marca"}
+						</div>
+					</div>
+				</div>
+			),
+		},
+
+		{
+			field: "price",
+			headerName: "Costo",
+			flex: 1,
+			renderCell: ({ value }) => (
+				<span className="cost-price">${Number(value).toFixed(2)}</span>
+			),
+		},
+
+		{
+			field: "salePrice",
+			headerName: "Venta",
+			flex: 1,
+			renderCell: ({ value }) => (
+				<span className="sale-price">${Number(value).toFixed(2)}</span>
+			),
+		},
+
+		{
+			field: "stock",
+			headerName: "Stock",
+			flex: 1,
+			renderCell: ({ value }) => {
+				let color = "success";
+
+				if (value <= 0) {
+					color = "error";
+				} else if (value <= 5) {
+					color = "warning";
+				}
+
+				return <Chip label={value} color={color} size="small" />;
+			},
+		},
+
+		{
+			field: "barcode",
+			headerName: "Código",
+			flex: 1.2,
+            renderCell: ({ row }) => (
+                <span className="barcode-cell">
+                    {row.barcode || "--"}
+                </span>
+            ),
+		},
+
+		{
+			field: "actions",
+			headerName: "Acciones",
+			sortable: false,
+			renderCell: (params) => (
+                <div className="actions-cell" >
+                    <IconButton className="actions-button edit-button" onClick={() => onEdit(params.row)}>
                         <EditIcon />
                     </IconButton>
-                    <IconButton onClick={() => onDelete(params.row.id)}>
+                    <IconButton className="actions-button delete-button" onClick={() => onDelete(params.row.id)}>
                         <DeleteIcon color="error" />
                     </IconButton>
-                </>
+                </div>
             ),
-        },
-    ];
+		},
+	];
 
-    return (
-        <DataGrid
-            rows={products}
-            columns={columns}
-            autoHeight
+	return (
+        <div className="catalog-grid-wrapper">
+            <DataGrid
+                rows={products}
+                columns={columns}
+                autoHeight
 
-            paginationMode="server"
-            rowCount={rowCount}
-            loading={loading}
+                paginationMode="server"
+                rowCount={rowCount}
+                loading={loading}
 
-            paginationModel={paginationModel}
-            onPaginationModelChange={onPaginationModelChange}
+                paginationModel={paginationModel}
+                onPaginationModelChange={onPaginationModelChange}
 
-            pageSizeOptions={[5, 10, 20, 50]}
+                pageSizeOptions={[10, 20, 50]}
 
-            sx={{
-                "& .sale-price-cell": {
-                    backgroundColor: "#fff3cd",
-                    fontWeight: "bold",
-                },
-            }}
-        />
-    );
+                disableColumnMenu
+                disableRowSelectionOnClick
+
+                className="catalog-grid"
+            />
+        </div>
+	);
 };
 
 export default TableWeb;

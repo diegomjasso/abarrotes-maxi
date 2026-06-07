@@ -20,6 +20,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import BarcodeScanner from "../shared/BarcodeScanner";
 
 import "../Components.scss";
+import "./SearchProductsInput.scss";
 
 const SearchProductsInput = ({ search, setSearch, onAdd }) => {
 	const barcodeInputRef = useRef(null);
@@ -52,7 +53,7 @@ const SearchProductsInput = ({ search, setSearch, onAdd }) => {
 		</Button>
 	) : (
 		<Button variant="contained" startIcon={<AddIcon />} onClick={onAdd}>
-		Agregar
+			Agregar
 		</Button>
 	);
 	const addButtonRender = onAdd ? buttonToAdd : null;
@@ -67,35 +68,36 @@ const SearchProductsInput = ({ search, setSearch, onAdd }) => {
 					inputRef={barcodeInputRef}
 					onChange={(e) => setSearch(e.target.value)}
 					onKeyDown={handleKeyDown}
+					className="search-products-input"
 					InputProps={{
 						endAdornment: (
 							<>
-							{/* 🔍 Buscar manual */}
-							<Tooltip title="Buscar">
-								<IconButton onClick={() => setSearch(search)}>
-								<SearchIcon />
-								</IconButton>
-							</Tooltip>
+								{/* 🔍 Buscar manual */}
+								<Tooltip title="Buscar">
+									<IconButton onClick={() => setSearch(search)}>
+										<SearchIcon className="search-product-icon" />
+									</IconButton>
+								</Tooltip>
 
-							{/* 📷 Cámara */}
-							<Tooltip
-								title="Escanear con cámara"
-								className="catalog-camara-icon"
-							>
-								<IconButton onClick={() => setOpenScanner(true)}>
-								<CameraAltIcon />
-								</IconButton>
-							</Tooltip>
+								{/* 📷 Cámara */}
+								<Tooltip
+									title="Escanear con cámara"
+									className="catalog-camara-icon"
+								>
+									<IconButton onClick={() => setOpenScanner(true)}>
+										<CameraAltIcon  className="scan-product-icon"/>
+									</IconButton>
+								</Tooltip>
 
-							{/* 📡 Lector Bluetooth */}
-							<Tooltip
-								title="Usar lector Bluetooth"
-								className="catalog-lector-icon"
-							>
-								<IconButton onClick={activateScannerMode}>
-								<BluetoothSearchingIcon />
-								</IconButton>
-							</Tooltip>
+								{/* 📡 Lector Bluetooth */}
+								<Tooltip
+									title="Usar lector Bluetooth"
+									className="catalog-lector-icon"
+								>
+									<IconButton onClick={activateScannerMode}>
+										<BluetoothSearchingIcon className="bluetooth-product-icon" />
+									</IconButton>
+								</Tooltip>
 							</>
 						),
 					}}

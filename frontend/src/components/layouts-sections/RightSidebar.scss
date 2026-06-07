@@ -1,0 +1,77 @@
+@use "../../variables.scss" as *;
+@use "../../fonts.scss";
+
+.right-sidebar {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	padding: .5rem 1rem;
+	background: var(--bg);
+
+	/* HEADER */
+	.right-sidebar-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: var(--space-lg);
+
+	}
+
+	/* CONTENT */
+
+
+	/* FOOTER */
+	.right-sidebar-footer {
+		margin-top: 2rem;
+
+		nav {
+			display: flex;
+			
+			button.do-pay {
+				&:hover {
+					cursor: pointer;
+					background: var(--success-hover);
+				}
+
+				&:active {
+					background: var(--success);
+				}
+
+				display: flex;
+				align-items: center;
+				background: var(--success);
+				color: var(--on-success);
+				padding: 0.7rem 1rem;
+				font-weight: bold;
+				font-size: 1.2rem;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: center;
+				border-radius: 8px;
+				width: 100%;
+				border-color: var(--border);
+				border-width: 2px;
+
+				.info-do-pay {
+					display: flex;
+					flex-direction: row;
+					justify-content: space-between;
+
+					.icon-shopping-cart {
+						margin-right: 0.5rem;
+						display: flex;
+						flex-direction: row;
+					}
+				}
+
+				.total-amount {
+					display: flex;
+					flex-direction: column;
+					margin-left: 1rem;
+					font-size: 1.1rem;
+					font-weight: bold;
+				}
+			}
+		}
+	}
+}
