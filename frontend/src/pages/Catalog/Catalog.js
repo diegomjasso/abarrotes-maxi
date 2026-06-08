@@ -19,7 +19,7 @@ import {
 } from "../../store/features/products/productsSlice";
 
 import "./Catalog.scss";
-import { startLoading, stopLoading } from "../../store/features/ui/uiSlice";
+import { setRightSidebarContent, startLoading, stopLoading } from "../../store/features/ui/uiSlice";
 
 const CatalogPage = () => {
 
@@ -63,6 +63,7 @@ const CatalogPage = () => {
 	useEffect(() => {
 		const delay = setTimeout(() => {
 			refetch();
+			dispatch(setRightSidebarContent("welcome"));
 		}, 500);
 
 		return () => clearTimeout(delay);

@@ -10,9 +10,7 @@ import { setError } from "../errors/errorSlice";
 /* ========================= */
 export const createSaleThunk = (saleData) => async (dispatch) => {
 	try {
-		console.log("Creating sale with data:", saleData);
 		const sale = await SalesServices.createSale(saleData);
-		console.log("SALE CREATED:", sale);
 	} catch (error) {
 		dispatch(setError({
 			message: error.message || "Error creando venta",
@@ -30,10 +28,7 @@ export const fetchSalesThunk = (filters) => async (dispatch) => {
 
 		const sales = await SalesServices.getSales(filters);
 
-		console.log("SALES:", sales);
-
 		// 👇 luego puedes crear slice para guardar ventas
-
 	} catch (error) {
 		dispatch(setError({
 			message: error.message || "Error obteniendo ventas",

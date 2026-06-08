@@ -1,6 +1,6 @@
 // src/pages/Dashboard.js
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Container, Grid, Paper, Typography, Button } from "@mui/material";
 import StoreIcon from "@mui/icons-material/Store";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
@@ -10,9 +10,17 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import { useNavigate } from "react-router-dom";
 
 import "./Dashboard.scss";
+import { useDispatch } from "react-redux";
+import { setRightSidebarContent } from "../../store/features/ui/uiSlice";
 
 const Dashboard = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Al cargar el dashboard, aseguramos que el contenido del sidebar sea el de bienvenida
+    dispatch(setRightSidebarContent("welcome"));
+  }, [dispatch]);
 
   const menuItems = [
     { label: "Catálogo", icon: <StoreIcon fontSize="large" />, path: "/catalogo" },

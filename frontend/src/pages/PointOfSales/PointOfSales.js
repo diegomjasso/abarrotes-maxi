@@ -3,7 +3,7 @@ import { Container, Typography } from "@mui/material";
 import "./PointOfSales.scss";
 import POSProducts from "../../components/point-of-sales/POSProducts";
 import { useDispatch, useSelector } from "react-redux";
-import { startLoading, stopLoading } from "../../store/features/ui/uiSlice";
+import { setRightSidebarContent, startLoading, stopLoading } from "../../store/features/ui/uiSlice";
 import { fetchProductsFilteredThunk } from "../../store/features/products/productsThunk";
 import { setProductsPage } from "../../store/features/products/productsSlice";
 import POSFooter from "../../components/point-of-sales/POSFooter";
@@ -50,6 +50,7 @@ const PointOfSales = () => {
 	useEffect(() => {
 		const delay = setTimeout(() => {
 			refetch();
+			dispatch(setRightSidebarContent("car"));
 		}, 500);
 
 		return () => clearTimeout(delay);

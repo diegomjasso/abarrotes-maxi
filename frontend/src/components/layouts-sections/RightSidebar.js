@@ -5,7 +5,6 @@ import React, { useState } from "react";
 import "./RightSidebar.scss";
 import POSCar from "../point-of-sales/POSCar";
 import OverviewSidebar from "./sub-components/Overview";
-import { ShoppingCart } from "lucide-react";
 import { useSelector } from "react-redux";
 
 const RightSidebar = () => {
@@ -16,7 +15,7 @@ const RightSidebar = () => {
 			content: "Selecciona un producto para agregarlo al carrito."
 		},
 		{
-			id: "cart",
+			id: "car",
 			title: "Carrito de compras",
 			content: "Aquí se mostrarán los productos agregados al carrito.",
 		},
@@ -32,9 +31,7 @@ const RightSidebar = () => {
 		}
 	];
 
-	const [activeSection, setActiveSection] = useState("cart");
-	const finalTotal = useSelector((state) => state.sales.finalTotal);
-	const cartItems = useSelector((state) => state.sales.carItemsSelcted);
+	const activeSection = useSelector((state) => state.ui.rightSidebarContent);
 
 	return (
 		<div className="right-sidebar">
@@ -45,7 +42,7 @@ const RightSidebar = () => {
 			{/* CONTENT */}
 			<div className="right-sidebar-content">
 				{activeSection === "welcome" && <OverviewSidebar />}
-				{activeSection === "cart" && <POSCar />}
+				{activeSection === "car" && <POSCar />}
 				{activeSection === "promotions" && (
 					<div className="placeholder-content">
 						<p>{sectionsContent.find((s) => s.id === activeSection)?.content}</p>

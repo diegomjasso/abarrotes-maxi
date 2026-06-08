@@ -5,13 +5,12 @@
 }
 
 .overview-header {
-    padding-bottom: 2rem;
     border-bottom:
         1px solid var(--border);
 }
 
 .overview-header h4 {
-    margin-bottom: 1rem;
+    margin-bottom: .4rem;
 }
 
 .overview-header p {
@@ -35,7 +34,8 @@
 }
 
 .overview-section h5 {
-    margin-bottom: 1.2rem;
+    margin-top: .8rem;
+    margin-bottom: .4rem;
 }
 
 .overview-stats {

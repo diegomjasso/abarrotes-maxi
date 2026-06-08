@@ -24,9 +24,14 @@ import "./POSCar.scss";
 import { ShoppingCart } from "lucide-react";
 import { printTicket } from "../../utils/printTicket";
 import { createSaleThunk } from "../../store/features/sales/salesThunk";
+import { setRightSidebarContent, showGlobalAlert } from "../../store/features/ui/uiSlice";
+import { useGlobalConfirm } from "../../hooks/useGlobalConfirm";
+import { useLocation } from "react-router-dom";
 
 const POSCar = ({ open, onClose }) => {
 	const dispatch = useDispatch();
+	const confirm = useGlobalConfirm();
+	const { pathname } = useLocation();
 	const user = useSelector((state) => state.auth.user);
 	const items = useSelector((state) => state.sales.carItemsSelcted);
 	const finalTotal = useSelector((state) => state.sales.finalTotal);
@@ -117,13 +122,34 @@ const POSCar = ({ open, onClose }) => {
 				};
 			}
 
-			//printTicket(saleData);
 			dispatch(completeSale());
 			await createSaleThunk(saleData)(dispatch);
+			await dispatch(showGlobalAlert({
+				title: "Venta realizada",
+				severity: "success",
+				message: "La venta se ha procesado correctamente."
+			}));
+
+			const printConfirmed = await confirm({
+				title: "¿Deseas imprimir el ticket?",
+				message: "¿Quieres imprimir el ticket de esta venta?"
+			});
+
+			if (printConfirmed) {
+				printTicket(saleData);
+			}
+			
 			setCash("");
+			if (pathname !== "/point-of-sales") {
+				dispatch(setRightSidebarContent("welcome"));
+			}
 		} catch (error) {
 			console.error("Error al procesar el pago:", error);
-			alert("Ocurrió un error al procesar el pago. Por favor, intenta nuevamente.");
+			dispatch(showGlobalAlert({
+				title: "Error",
+				severity: "error",
+				message: "Ocurrió un error al procesar el pago. Por favor, intenta nuevamente."
+			}));
 		} finally {
 			dispatch(stopSaleLoading());
 		}

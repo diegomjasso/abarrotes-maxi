@@ -6,26 +6,29 @@ import CssBaseline from "@mui/material/CssBaseline";
 
 import App from "./App";
 import "./index.scss"; // 👉 Archivo SASS principal
-import reportWebVitals from './reportWebVitals'
+import reportWebVitals from "./reportWebVitals";
 
 // Redux
 import { Provider } from "react-redux";
 import { store } from "./store/app.store";
 
 import { getTheme } from "./themes/theme"; // 👉 Archivo de tema personalizado
+import GlobalConfirmProvider from "./providers/GlobalConfirmProvider";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-	<ThemeProvider theme={getTheme("dark")}>
-	  <CssBaseline />
-	  <BrowserRouter>
-		<Provider store={store}>
-		  <App />
-		</Provider>
-	  </BrowserRouter>
-	</ThemeProvider>
-  </React.StrictMode>
+	<React.StrictMode>
+		<ThemeProvider theme={getTheme("dark")}>
+				<CssBaseline />
+				<BrowserRouter>
+					<Provider store={store}>
+						<GlobalConfirmProvider>
+							<App />
+						</GlobalConfirmProvider>
+					</Provider>
+				</BrowserRouter>
+		</ThemeProvider>
+	</React.StrictMode>
 );
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

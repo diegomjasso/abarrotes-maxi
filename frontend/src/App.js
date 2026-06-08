@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useTheme } from "@mui/material/styles";
 
 import { Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -19,6 +18,8 @@ import Landing from "./pages/Landing/Landing";
 
 import "./App.scss";
 import { getTheme } from "./themes/theme";
+import GlobalAlert from "./components/global-alerts/GlobalAlert";
+import GlobalConfirm from "./components/global-alerts/GlobalConfirm";
 
 const App = () => {
 
@@ -128,6 +129,9 @@ const App = () => {
                 </Route>
 
             </Routes>
+
+            <GlobalAlert />
+			<GlobalConfirm />
 
             <ScreenBlocker
                 open={isLoading}
