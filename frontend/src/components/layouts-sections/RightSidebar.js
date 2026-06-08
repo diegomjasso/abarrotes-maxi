@@ -59,17 +59,7 @@ const RightSidebar = () => {
 			</div>
 
 			{/* FOOTER */}
-			<div className="right-sidebar-footer">
-				<nav>
-					{activeSection === "cart" && cartItems.length > 0 && (
-						<>
-							<button onClick={() => setActiveSection("welcome")} className="btn btn-success do-pay">
-								<span className="info-do-pay"><ShoppingCart size={22} className="icon-shopping-cart" /> Cobrar</span> <span className="total total-amount"> ${finalTotal.toFixed(2)}</span>
-							</button>
-						</>
-					)}
-				</nav>
-			</div>
+			<div className="right-sidebar-footer"></div>
 		</div>
 	);
 };

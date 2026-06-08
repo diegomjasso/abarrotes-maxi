@@ -7,7 +7,8 @@ const initialState = {
     totalAmount: 0,
     finalTotal: 0,
     saleStatus: "idle", // 'idle' | 'pending' | 'succeeded' | 'failed',
-    paymentMethod: "cash", // 'cash' | 'card' | 'bank_transfer'
+    paymentMethod: "cash", // 'cash' | 'card' | 'bank_transfer',
+    isSaleLoading: false,
 };
 
 const calculateTotal = (items) => {
@@ -87,6 +88,12 @@ const salesSlice = createSlice({
         updateCommissionRate: (state, action) => {
             state.commissionRate = action.payload;
         },
+        startSaleLoading: (state) => {
+            state.isSaleLoading = true;
+        },
+        stopSaleLoading: (state) => {
+            state.isSaleLoading = false;
+        },
         restartStateSales: () => initialState,
     }
 });
@@ -99,6 +106,8 @@ export const {
     updateFinalTotalAmount,
     updateProductSalePrice,
     updateCommissionRate,
+    startSaleLoading,
+    stopSaleLoading,
     restartStateSales
 } = salesSlice.actions;
 

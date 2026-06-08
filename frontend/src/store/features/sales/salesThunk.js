@@ -10,19 +10,14 @@ import { setError } from "../errors/errorSlice";
 /* ========================= */
 export const createSaleThunk = (saleData) => async (dispatch) => {
 	try {
-		dispatch(startLoading());
-
-		const sale = await SalesServices.create (saleData);
-
+		console.log("Creating sale with data:", saleData);
+		const sale = await SalesServices.createSale(saleData);
 		console.log("SALE CREATED:", sale);
-
 	} catch (error) {
 		dispatch(setError({
 			message: error.message || "Error creando venta",
 			type: "error"
 		}));
-	} finally {
-		dispatch(stopLoading());
 	}
 };
 
