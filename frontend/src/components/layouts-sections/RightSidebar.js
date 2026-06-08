@@ -1,6 +1,6 @@
 // RightSidebar.jsx
 
-import React, { useState } from "react";
+import React from "react";
 
 import "./RightSidebar.scss";
 import POSCar from "../point-of-sales/POSCar";
@@ -28,6 +28,9 @@ const RightSidebar = () => {
 			id: "suggestions",
 			title: "Sugerencias",
 			content: "Aquí se mostrarán sugerencias de productos relacionados."
+		},
+		{
+			id: "hide",
 		}
 	];
 

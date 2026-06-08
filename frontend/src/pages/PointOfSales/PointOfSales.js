@@ -54,7 +54,7 @@ const PointOfSales = () => {
 		}, 500);
 
 		return () => clearTimeout(delay);
-	}, [search, refetch]);
+	}, [search, refetch, dispatch]);
 
 	/* ========================= */
 	/* PAGINACIÓN (REDUX) */

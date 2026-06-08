@@ -67,7 +67,7 @@ const CatalogPage = () => {
 		}, 500);
 
 		return () => clearTimeout(delay);
-	}, [search, refetch]);
+	}, [search, refetch, dispatch]);
 
 	/* ========================= */
 	/* HANDLERS */
