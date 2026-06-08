@@ -3,8 +3,8 @@
 
 .landing {
 	font-family: "Inter", sans-serif;
-	background: $black;
-	color: white;
+	background: var(--bg);
+	color: var(--text);
 
 	.navbar {
 		display: flex;
@@ -92,7 +92,7 @@
 
 	.heroContent h1 {
 		font-family: "Cinzel", serif;
-		color: $red;
+		color: var(--danger);
 	}
 
 	.heroContent h2 {
@@ -100,7 +100,7 @@
 	}
 
 	.cta {
-		background: $red;
+		background: var(--danger);
 		padding: 14px 30px;
 		border-radius: 6px;
 		text-decoration: none;

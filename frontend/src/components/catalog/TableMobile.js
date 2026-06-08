@@ -57,22 +57,22 @@ const TableMobile = ({
 								label={product.stock || ""}
 								size="small"
 								color={
-								product.stock && product.stock <= 10
+								!product.stock || (product.stock <= 8)
 									? "error"
 									: "success"
 								}
 							/>
 						</Box>
 
-						<Typography variant="body2">
-							Código: {product.barcode || "—"}
+						<Typography variant="body2" sx={{ mt: 1 }}>
+							Código: <span className="barcode-cell">{product.barcode || "—"}</span>
 						</Typography>
 
 						<Box mt={1}>
 							<IconButton
 								onClick={() => onEdit(product)}
 							>
-								<EditIcon />
+								<EditIcon className="actions-button edit-button" />
 							</IconButton>
 
 							<IconButton
@@ -80,7 +80,7 @@ const TableMobile = ({
 									onDelete(product.id)
 								}
 							>
-								<DeleteIcon color="error" />
+								<DeleteIcon className="actions-button delete-button" />
 							</IconButton>
 						</Box>
 					</CardContent>

@@ -13,7 +13,7 @@ import {
 	Typography,
 	Box,
 	Chip,
-	Tooltip
+	Tooltip,
 } from "@mui/material";
 
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
@@ -22,17 +22,13 @@ import BluetoothSearchingIcon from "@mui/icons-material/BluetoothSearching";
 
 import { findByBarcode } from "../firebase/services/products.service";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { generateSearchTokens } from "../utils/generateSearchToken.utils";
+import "./Components.scss";
+import { showGlobalAlert } from "../store/features/ui/uiSlice";
 
-
-const ProductModal = ({
-	open,
-	onClose,
-	onSave,
-	initialData,
-	onEdit
-}) => {
+const ProductModal = ({ open, onClose, onSave, initialData, onEdit }) => {
+	const dispatch = useDispatch();
 	const barcodeInputRef = useRef(null);
 	const activateScannerMode = () => {
 		barcodeInputRef.current?.focus();
@@ -47,7 +43,7 @@ const ProductModal = ({
 		barcode: "",
 		barcodes: "",
 		isActive: true,
-		isInBulk: false
+		isInBulk: false,
 	});
 
 	const [openScanner, setOpenScanner] = useState(false);
@@ -66,8 +62,7 @@ const ProductModal = ({
 				price: initialData.price ?? "",
 				salePrice: initialData.salePrice ?? "",
 				stock: initialData.stock ?? "",
-				barcodes:
-					initialData?.barcodes?.join(", ") || "",
+				barcodes: initialData?.barcodes?.join(", ") || "",
 			});
 		} else {
 			setProduct({
@@ -79,7 +74,7 @@ const ProductModal = ({
 				stock: "",
 				barcode: "",
 				barcodes: "",
-				isActive: true
+				isActive: true,
 			});
 		}
 	}, [initialData, open]);
@@ -89,7 +84,7 @@ const ProductModal = ({
 	/* ========================= */
 	const margin = useMemo(() => {
 		const sale = parseFloat(product.price || 0);
-		const salePrice = parseFloat(product.salePrice || 0)
+		const salePrice = parseFloat(product.salePrice || 0);
 		return salePrice - sale;
 	}, [product.price, product.salePrice]);
 
@@ -100,14 +95,9 @@ const ProductModal = ({
 		const checkBarcode = async () => {
 			if (!product.barcode) return;
 
-			const existing = await findByBarcode(
-				product.barcode
-			);
+			const existing = await findByBarcode(product.barcode);
 
-			if (
-				existing &&
-				existing.id !== initialData?.id
-			) {
+			if (existing && existing.id !== initialData?.id) {
 				setBarcodeExists(true);
 			} else {
 				setBarcodeExists(false);
@@ -156,15 +146,29 @@ const ProductModal = ({
 			name_lower: product.name.toLowerCase(),
 			brand_lower: product.brand.toLowerCase(),
 			searchTokens: generateSearchTokens(product),
-			isInBulk: product.isInBulk
+			isInBulk: product.isInBulk !== undefined ? product.isInBulk : false,
 		};
 
 		if (product.id) {
 			// 🔥 EDITAR
 			onEdit(product.id, payload);
+			dispatch(
+				showGlobalAlert({
+					title: "Producto editado",
+					message: `El producto "${product.name}" ha sido actualizado.`,
+					type: "success",
+				})
+			);
 		} else {
 			// 🔥 CREAR
 			onSave(payload);
+			dispatch(
+				showGlobalAlert({
+					title: "Producto creado",
+					message: `El producto "${product.name}" ha sido creado.`,
+					type: "success",
+				})
+			);
 		}
 
 		onClose();
@@ -177,15 +181,12 @@ const ProductModal = ({
 			{/* ========================= */}
 			<Dialog open={open} onClose={onClose} fullWidth>
 				<DialogTitle>
-					{initialData
-						? "Editar Producto"
-						: "Agregar Producto"}
+					{initialData ? "Editar Producto" : "Agregar Producto"}
 				</DialogTitle>
 
 				<form onSubmit={handleSubmit}>
 					<DialogContent>
 						<Stack spacing={2} sx={{ mt: 1 }}>
-
 							<TextField
 								label="Nombre"
 								required
@@ -193,7 +194,7 @@ const ProductModal = ({
 								onChange={(e) =>
 									setProduct({
 										...product,
-										name: e.target.value
+										name: e.target.value,
 									})
 								}
 							/>
@@ -205,7 +206,7 @@ const ProductModal = ({
 								onChange={(e) =>
 									setProduct({
 										...product,
-										brand: e.target.value
+										brand: e.target.value,
 									})
 								}
 							/>
@@ -219,7 +220,7 @@ const ProductModal = ({
 								onChange={(e) =>
 									setProduct({
 										...product,
-										price: e.target.value
+										price: e.target.value,
 									})
 								}
 							/>
@@ -233,23 +234,17 @@ const ProductModal = ({
 								onChange={(e) =>
 									setProduct({
 										...product,
-										salePrice: e.target.value
+										salePrice: e.target.value,
 									})
 								}
 							/>
 
 							{/* MARGEN */}
 							<Box>
-								<Typography variant="body2">
-									Margen:
-								</Typography>
+								<Typography variant="body2">Margen:</Typography>
 								<Chip
 									label={`$${margin.toFixed(2)}`}
-									color={
-										margin > 0
-											? "success"
-											: "error"
-									}
+									color={margin > 0 ? "success" : "error"}
 								/>
 							</Box>
 
@@ -261,7 +256,7 @@ const ProductModal = ({
 								onChange={(e) =>
 									setProduct({
 										...product,
-										stock: e.target.value
+										stock: e.target.value,
 									})
 								}
 							/>
@@ -273,28 +268,45 @@ const ProductModal = ({
 								onChange={(e) =>
 									setProduct({
 										...product,
-										barcode: e.target.value
+										barcode: e.target.value,
 									})
 								}
 								onKeyDown={(e) => {
 									if (e.key === "Enter") {
 										// Aquí puedes validar automáticamente
-										console.log("Código capturado:", product.barcode);
+										console.log(
+											"Código capturado:",
+											product.barcode
+										);
 									}
 								}}
 								InputProps={{
 									endAdornment: (
 										<>
 											{/* 📷 Cámara */}
-											<Tooltip title="Escanear con cámara">
-												<IconButton onClick={() => setOpenScanner(true)}>
+											<Tooltip
+												title="Escanear con cámara"
+												className="catalog-camara-icon"
+											>
+												<IconButton
+													onClick={() =>
+														setOpenScanner(true)
+													}
+												>
 													<CameraAltIcon />
 												</IconButton>
 											</Tooltip>
 
 											{/* 📡 Lector Bluetooth */}
-											<Tooltip title="Usar lector Bluetooth">
-												<IconButton onClick={activateScannerMode}>
+											<Tooltip
+												title="Usar lector Bluetooth"
+												className="catalog-lector-icon"
+											>
+												<IconButton
+													onClick={
+														activateScannerMode
+													}
+												>
 													<BluetoothSearchingIcon />
 												</IconButton>
 											</Tooltip>
@@ -309,7 +321,7 @@ const ProductModal = ({
 								onChange={(e) =>
 									setProduct({
 										...product,
-										barcodes: e.target.value
+										barcodes: e.target.value,
 									})
 								}
 							/>
@@ -321,8 +333,7 @@ const ProductModal = ({
 										onChange={(e) =>
 											setProduct({
 												...product,
-												isActive:
-													e.target.checked
+												isActive: e.target.checked,
 											})
 										}
 									/>
@@ -337,22 +348,18 @@ const ProductModal = ({
 										onChange={(e) =>
 											setProduct({
 												...product,
-												isInBulk:
-													e.target.checked
+												isInBulk: e.target.checked,
 											})
 										}
 									/>
 								}
 								label="Producto A Granel"
 							/>
-
 						</Stack>
 					</DialogContent>
 
 					<DialogActions>
-						<Button onClick={onClose}>
-							Cancelar
-						</Button>
+						<Button onClick={onClose}>Cancelar</Button>
 						<Button
 							variant="contained"
 							type="submit"
@@ -369,21 +376,17 @@ const ProductModal = ({
 			{/* ========================= */}
 			<Dialog
 				open={openScanner}
-				onClose={() =>
-					setOpenScanner(false)
-				}
+				onClose={() => setOpenScanner(false)}
 				fullWidth
 			>
-				<DialogTitle>
-					Escanear Código
-				</DialogTitle>
+				<DialogTitle>Escanear Código</DialogTitle>
 
 				<DialogContent>
 					<BarcodeScanner
 						onDetected={(code) => {
 							setProduct({
 								...product,
-								barcode: code
+								barcode: code,
 							});
 							setOpenScanner(false);
 						}}

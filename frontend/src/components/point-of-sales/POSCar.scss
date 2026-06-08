@@ -1,0 +1,381 @@
+@use "../../variables.scss" as *;
+@use "../../fonts";
+
+.pos-car {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	overflow: hidden;
+	position: relative;
+	
+	.pos-car-backdrop-lock {
+		display: none; /* 🔥 oculto por defecto */
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(255, 255, 255, 0.6);
+		z-index: 10;
+		align-items: center;
+		justify-content: center;
+		border-radius: 14px;
+
+		&.active {
+			display: flex; /* 🔥 mostrar cuando esté activo */
+		}
+
+		.pos-car-loading {
+			// 🔥 centrar el spinner dentro del backdrop
+			display: flex;
+			animation: spin 1s linear infinite;
+			align-self: center;
+			justify-self: center;
+		}
+	}
+
+	// POS Payment Modal
+	.pos-payment-modal {
+		display: flex;
+		flex-direction: column;
+		background: var(--surface);
+		border-radius: 14px;
+		border: 2px solid var(--border);
+
+		.header {
+			padding: 4px 8px;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-around;
+
+			.title-cart {
+				display: flex;
+				flex-direction: column;
+				align-self: flex-start;
+				gap: 8;
+				font-size: 1.2rem;
+				font-weight: bold;
+			}
+			
+			.delete-icon-button {
+				color: var(--danger);
+				display: flex;
+				align-self: flex-start;
+				flex-direction: column;
+				margin: 8px 0px;
+				gap: 2;
+			}
+		}
+
+		.list {
+			max-height: 400px;
+			overflow-y: auto;
+			margin: 8px;
+
+			.item-block {
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+				padding: 12px;
+				margin-bottom: 10px;
+				border: 2px solid var(--border);
+				border-radius: 14px;
+				background: var(--surface);
+				transition: all .2s ease;
+
+				&:hover {
+					border-color: var(--primary);
+				}
+
+				.item-top {
+					display: flex;
+					justify-content: space-between;
+					align-items: flex-start;
+				}
+
+				.item-info {
+					flex: 1;
+					min-width: 0;
+				}
+
+				.delete-icon-button {
+					color: var(--danger);
+					align-self: flex-start;
+				}
+
+				.item-name-row {
+					display: flex;
+					align-items: center;
+					gap: 8px;
+					flex-wrap: wrap;
+					margin-bottom: 4px;
+
+					.name {
+						font-weight: 700;
+						font-size: .95rem;
+						color: var(--text);
+						text-transform: uppercase;
+					}
+
+					.bulk-badge {
+						padding: 2px 8px;
+						border-radius: 999px;
+						background: var(--surface);
+						color: var(--primary);
+						font-size: .7rem;
+						font-weight: 700;
+					}
+				}
+
+				.description {
+					display: block;
+					font-size: .82rem;
+					color: var(--text-secondary);
+				}
+
+				.item-middle {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					font-size: .82rem;
+					color: var(--text-secondary);
+
+					strong {
+						color: var(--text);
+						margin-left: 4px;
+					}
+				}
+
+				.item-weight {
+					margin-top: 4px;
+				}
+
+				.item-bottom {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					padding-top: 8px;
+					border-top: 1px solid var(--border);
+
+					span {
+						font-size: .82rem;
+						color: var(--text-secondary);
+					}
+
+					.price {
+						font-size: 1.1rem;
+						font-weight: 700;
+						color: var(--primary);
+					}
+				}
+
+				.item-actions {
+					display: flex;
+					justify-content: flex-end;
+
+					.delete-icon-button {
+						color: var(--danger);
+					}
+				}
+			}
+		}
+
+		.empty-message {
+			text-align: center;
+			color: var(--text-secondary);
+			font-size: 1rem;
+			padding: 1.25rem 0;
+		}
+
+		.item {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 6px 0;
+			border-bottom: 2px solid;
+			border-color: var(--border);
+		}
+
+		.total {
+			margin-top: 10px;
+			font-size: 1.3rem;
+			font-weight: bold;
+			padding: 4px 8px;
+			background-color: var(--bg);
+			border-radius: 14px 14px 0 0;
+			border-color: var(--border);
+			border-width: 2px 2px 0px 2px;
+			border-style: solid;
+		}
+
+		/* 🔥 GRID DE MÉTODOS */
+		.payment-methods {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 10px;
+			padding: 16px 8px;
+			background: var(--bg);
+			border-radius: 0px 0px 14px 14px;
+			border-color: var(--border);
+			border-width: 0px 2px 2px 2px;
+			border-style: solid;
+		}
+
+		.method {
+			border-radius: 14px;
+			border: 2px solid var(--border);
+			background: var(--surface);
+			color: var(--text);
+			padding: 4px 6px;
+
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 6px;
+
+			cursor: pointer;
+			transition: all 0.2s ease;
+
+			.icon {
+				font-size: 32px; // 🔥 icono grande
+			}
+
+			span {
+				font-size: 13px;
+				font-weight: 600;
+			}
+
+			&:hover {
+				background: var(--secondary);
+				border-color: var(--primary);
+				color: var(--primary);
+				transform: translateY(-2px);
+			}
+
+			&.active {
+				background: var(--secondary);
+				border-color: var(--primary);
+				color: var(--primary);
+				box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+			}
+		}
+
+		.cash {
+			margin-top: 12px;
+			border-radius: 14px;
+		}
+
+		.ex-change {
+			margin-top: 10px;
+			padding: 10px;
+			border-radius: 10px;
+
+			// 🔥 estado por defecto (neutral)
+			background: var(--surface);
+
+			&.valid {
+
+			}
+
+			&.invalid {
+
+			}
+
+			.cash-input {
+				border-radius: 16px;
+			}
+
+			.ex-row {
+				display: flex;
+				justify-content: space-between;
+				font-weight: bold;
+				margin-top: 6px;
+			}
+
+			.change {
+				margin-top: 8px;
+				font-weight: bold;
+
+				&.positive {
+					color: var(--success);
+				}
+
+				&.negative {
+					color: var(--danger);
+				}
+			}
+		}
+
+		.commission {
+			margin: 8px;
+			padding: 10px;
+			background: var(--surface);
+			border: 2px solid var(--border);
+			border-radius: 10px;
+
+			.commission-row {
+				display: flex;
+				justify-content: space-between;
+				font-weight: bold;
+				margin-bottom: 6px;
+				color: #ef6c00;
+			}
+		}
+	}
+
+	.pos-car-footer{
+		padding: 16px 8px;
+
+		button.do-pay {
+			&:hover {
+				cursor: pointer;
+				background: var(--success-hover);
+			}
+
+			&:active {
+				background: var(--success);
+			}
+
+			&:disabled {
+				background: var(--border);
+				cursor: not-allowed;
+			}
+
+			display: flex;
+			align-items: center;
+			background: var(--success);
+			color: var(--on-success);
+			padding: 0.7rem 1rem;
+			font-weight: bold;
+			font-size: 1.2rem;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+			border-radius: 8px;
+			width: 100%;
+			border-color: var(--border);
+			border-width: 2px;
+
+			.info-do-pay {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+
+				.icon-shopping-cart {
+					margin-right: 0.5rem;
+					display: flex;
+					flex-direction: row;
+				}
+			}
+
+			.total-amount {
+				display: flex;
+				flex-direction: column;
+				margin-left: 1rem;
+				font-size: 1.1rem;
+				font-weight: bold;
+			}
+		}
+	}
+}

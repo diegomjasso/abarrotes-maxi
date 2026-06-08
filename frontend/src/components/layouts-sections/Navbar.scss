@@ -1,0 +1,104 @@
+@use "../../variables.scss" as *;
+@use "../../fonts.scss";
+
+.navbar {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	background: var(--bg);
+}
+
+.menu-button {
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: var(--text) !important;
+	font-size: 1.4rem;
+
+	&:hover {
+		color: var(--primary) !important;
+	}
+}
+
+.title {
+	flex-grow: 1;
+	cursor: pointer;
+	font-weight: bold !important;
+	color: var(--text);
+	font-family: "Great Vibes", serif !important;
+	font-size: 1.8rem !important;
+}
+
+.nav-links {
+	display: flex;
+	gap: 10px;
+}
+
+.user-box {
+	display: flex;
+	align-items: center;
+	margin-right: 10px;
+	gap: 12px;
+
+	.user-info {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+
+		.user-avatar {
+			width: 38px !important;
+			height: 38px !important;
+
+			font-size: 1.4rem !important;
+			font-weight: 700 !important;
+
+			background: var(--primary) !important;
+			color: white !important;
+
+			border: 2px solid var(--border);
+		}
+
+		.user-name {
+			color: var(--text);
+			font-weight: 500;
+		}
+	}
+
+}
+
+.logout-btn {
+	margin-left: 10px;
+}
+
+/* 🍔 HAMBURGER */
+.menu-button {
+	display: none !important;
+}
+
+/* 📱 DRAWER */
+.drawer {
+	width: 250px;
+	padding: 10px;
+}
+
+/* ========================= */
+/* 📱 RESPONSIVE */
+/* ========================= */
+
+@media (max-width: $mobile) {
+	.nav-links {
+		display: none;
+	}
+
+	.logout-btn {
+		display: none;
+	}
+
+	.menu-button {
+		display: block !important;
+	}
+
+	.user-box {
+		display: none;
+	}
+}

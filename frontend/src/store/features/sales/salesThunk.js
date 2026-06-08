@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
     Sales as SalesServices,
 } from "../../../firebase/services";
@@ -10,19 +11,12 @@ import { setError } from "../errors/errorSlice";
 /* ========================= */
 export const createSaleThunk = (saleData) => async (dispatch) => {
 	try {
-		dispatch(startLoading());
-
-		const sale = await SalesServices.create (saleData);
-
-		console.log("SALE CREATED:", sale);
-
+		const sale = await SalesServices.createSale(saleData);
 	} catch (error) {
 		dispatch(setError({
 			message: error.message || "Error creando venta",
 			type: "error"
 		}));
-	} finally {
-		dispatch(stopLoading());
 	}
 };
 
@@ -35,10 +29,7 @@ export const fetchSalesThunk = (filters) => async (dispatch) => {
 
 		const sales = await SalesServices.getSales(filters);
 
-		console.log("SALES:", sales);
-
 		// 👇 luego puedes crear slice para guardar ventas
-
 	} catch (error) {
 		dispatch(setError({
 			message: error.message || "Error obteniendo ventas",

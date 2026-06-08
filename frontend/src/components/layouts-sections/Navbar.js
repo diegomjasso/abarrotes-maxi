@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { memo, useMemo, useState } from "react";
 import {
 	AppBar,
 	Toolbar,
 	Typography,
-	Button,
 	Box,
 	Chip,
 	IconButton,
@@ -11,20 +10,19 @@ import {
 	List,
 	ListItem,
 	ListItemButton,
-	ListItemText
+	ListItemText,
+	Avatar,
 } from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu";
-import LogoutIcon from "@mui/icons-material/Logout";
 
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../store/features/auth/authSlice";
+import { logout } from "../../store/features/auth/authSlice";
 
-import "./Components.scss";
+import "./Navbar.scss";
 
 const Navbar = () => {
-
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
@@ -41,6 +39,23 @@ const Navbar = () => {
 		navigate(path);
 		setOpenDrawer(false);
 	};
+
+	const userInitial = useMemo(() => {
+		return user?.name?.[0]?.toUpperCase() || "?";
+	}, [user?.name]);
+
+	const colors = [
+		"#3b82f6",
+		"#8b5cf6",
+		"#06b6d4",
+		"#22c55e",
+		"#f97316",
+		"#ef4444",
+		"#ec4899",
+		"#14b8a6",
+	];
+
+	const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
 	return (
 		<>
@@ -65,46 +80,31 @@ const Navbar = () => {
 						Abarrotes Maxi
 					</Typography>
 
-					{/* 🧭 NAV DESKTOP */}
-					<Box className="nav-links">
-
-						<Button color="inherit" onClick={() => navigate("/dashboard")}>
-							Inicio
-						</Button>
-
-						<Button color="inherit" onClick={() => navigate("/punto-de-venta")}>
-							POS
-						</Button>
-
-						<Button color="inherit" onClick={() => navigate("/catalogo")}>
-							Catálogo
-						</Button>
-
-					</Box>
 
 					{/* 👤 USER */}
-					{user && (
-						<Box className="user-box">
-							<Typography>
+					<Box className="user-box">
+						<Avatar 
+							sx={{
+								bgcolor: randomColor,
+							}}
+							className="user-avatar"
+						>
+							{userInitial}
+						</Avatar>
+
+						<Box className="user-info">
+							<Typography className="user-name">
 								{user.name}
 							</Typography>
 
 							{user.isSuperAdmin && (
-								<Chip label="Admin" size="small" />
+								<Chip
+									label="Admin"
+									size="small"
+								/>
 							)}
 						</Box>
-					)}
-
-					{/* 🚪 LOGOUT */}
-					<Button
-						className="logout-btn"
-						color="inherit"
-						startIcon={<LogoutIcon />}
-						onClick={handleLogout}
-					>
-						Salir
-					</Button>
-
+					</Box>
 				</Toolbar>
 			</AppBar>
 
@@ -115,9 +115,7 @@ const Navbar = () => {
 				onClose={() => setOpenDrawer(false)}
 			>
 				<Box className="drawer">
-
 					<List>
-
 						<ListItem disablePadding>
 							<ListItemButton onClick={() => handleNavigate("/dashboard")}>
 								<ListItemText primary="Inicio" />
@@ -141,13 +139,11 @@ const Navbar = () => {
 								<ListItemText primary="Cerrar sesión" />
 							</ListItemButton>
 						</ListItem>
-
 					</List>
-
 				</Box>
 			</Drawer>
 		</>
 	);
 };
 
-export default Navbar;
+export default memo(Navbar);

@@ -1,0 +1,121 @@
+.catalog-grid-wrapper {
+    width: 100%;
+    overflow-x: scroll;
+}
+
+.catalog-grid {
+    border: 1px solid var(--border) !important;
+    border-radius: 20px !important;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 1rem;
+
+    .MuiDataGrid-columnHeaders {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+    } 
+
+    .MuiDataGrid-columnHeaderTitle {
+        font-weight: 700;
+    }
+
+    .MuiDataGrid-cell {
+        border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+
+    .MuiDataGrid-row {
+        transition: all .2s ease;
+
+        &:hover {
+            background: rgba(59,130,246,.08);
+        }
+    }
+}
+
+.product-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px !important;
+    width: 100%;
+}
+
+.product-avatar {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: rgba(59,130,246,.12);
+
+    color: var(--primary);
+
+    flex-shrink: 0;
+}
+
+.product-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.product-title {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.product-subtitle {
+    font-size: .8rem;
+    color: var(--text-secondary);
+}
+
+.cost-price {
+    color: var(--text-secondary);
+}
+
+.sale-price {
+    color: var(--success);
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.barcode-cell {
+    color: var(--surface) !important;
+    background: rgb(226, 200, 32) !important;
+    padding: 4px !important;
+    border-radius: 4px !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+}
+
+.actions-button {
+    color: var(--text-secondary);
+    opacity: 0.6;
+    transition: all .2s ease;
+
+    &:hover {
+        color: var(--text);
+        opacity: 1;
+    }
+
+    &.edit-button {
+        color: var(--text);
+
+        &:hover {
+            color: var(--primary);
+            opacity: 1;
+        }
+    }
+
+    &.delete-button {
+        color: var(--danger);
+
+        &:hover {
+            color: var(--danger-hover);
+            opacity: 1;
+        }
+    }
+}

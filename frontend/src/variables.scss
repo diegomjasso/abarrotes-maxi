@@ -1,15 +1,10 @@
 html {
-  font-size: 100%;
+	font-size: 100%;
 }
 
 $mobileSmall: 480px;
 $mobile: 768px;
 $tablet: 1024px;
-
-$red: #ff1f3d;
-$dark: #0f0f0f;
-$black: #050505;
-$text: #e5e5e5;
 
 $space-xs: 0.8rem;
 $space-sm: 1.2rem;
@@ -21,3 +16,51 @@ $text-sm: 1.4rem;
 $text-md: 1.6rem;
 $text-lg: 2rem;
 $text-xl: 3rem;
+
+:root {
+	/* COLORS */
+
+	--bg: #f8fafc;
+
+	--surface: #ffffff;
+
+	--text: #0f172a;
+
+	--text-secondary: #64748b;
+
+	--primary: #2563eb;
+
+	--primary-hover: #1d4ed8;
+
+	--border: #e2e8f0;
+
+	--success: #16a34a;
+
+	--danger: #dc2626;
+
+	--card-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* DARK THEME */
+
+[data-theme="dark"] {
+	--bg: #0f172a;
+
+	--surface: #111827;
+
+	--text: #f8fafc;
+
+	--text-secondary: #94a3b8;
+
+	--primary: #3b82f6;
+
+	--primary-hover: #2563eb;
+
+	--border: #444444;
+
+	--success: #22c55e;
+
+	--danger: #ef4444;
+
+	--card-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}

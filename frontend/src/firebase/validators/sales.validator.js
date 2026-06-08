@@ -29,8 +29,8 @@ export const validateSale = (sale) => {
     errors.saleStatus = "El estado de la venta es inválido";
   }
 
-  if (sale.saller && typeof sale.saller !== "object") {
-    errors.saller = "saller debe ser un objeto con información del vendedor";
+  if (sale.seller && typeof sale.seller !== "object") {
+    errors.seller = "seller debe ser un objeto con información del vendedor";
   }
 
   if (sale.dateOfSale && isNaN(Date.parse(sale.dateOfSale))) {
@@ -39,6 +39,7 @@ export const validateSale = (sale) => {
 
   if (Object.keys(errors).length > 0) {
     const error = new Error("Error de validación");
+    console.log("Validation errors:", errors);
     error.validationErrors = errors;
     throw error;
   }
