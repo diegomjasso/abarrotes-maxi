@@ -44,9 +44,7 @@ const SearchProductsInput = ({ search, setSearch, onAdd }) => {
 
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-	const label = isMobile
-		? "Buscar ..."
-		: "Buscar por nombre, marca o código (Enter para buscar)";
+	const label ="Buscar ...";
 	const buttonToAdd = isMobile ? (
 		<Button className="button-add-mobile-icon" onClick={onAdd}>
 			<AddIcon />
